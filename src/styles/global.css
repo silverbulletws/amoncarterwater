@@ -1,0 +1,110 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens — single source of truth.
+   Change a colour here and it changes everywhere, including Tailwind
+   utilities (bg-acw-deep, text-acw-muted, border-acw-rule, ...) because the
+   @theme block below maps these straight through.
+--------------------------------------------------------------------------- */
+
+:root {
+  /* Brand */
+  --acw-deep:   #04342C; /* hero background, headings on white */
+  --acw-green:  #0F6E56; /* primary brand, icons, borders on dark */
+  --acw-mid:    #1D9E75; /* status dot, small accents */
+  --acw-light:  #9FE1CB; /* subheads on dark, hairlines on tint */
+  --acw-tint:   #E1F5EE; /* status strip background, section washes */
+  --acw-alert:  #993C1D; /* report-a-leak button, urgent states */
+
+  /* Text and structure */
+  --acw-ink:    #2C2C2A; /* body text */
+  --acw-muted:  #5F5E5A; /* secondary text */
+  --acw-rule:   #D3D1C7; /* dividers */
+
+  /* Status states beyond `normal`. Derived, not brand — they only ever appear
+     inside StatusBar, but they live here so all colour is in one file. */
+  --acw-amber-tint: #FBF0DA;
+  --acw-amber-ink:  #7A4E10;
+  --acw-red-tint:   #F8E3DC;
+  --acw-red-ink:    #8A2D12;
+}
+
+@theme inline {
+  --color-acw-deep:  var(--acw-deep);
+  --color-acw-green: var(--acw-green);
+  --color-acw-mid:   var(--acw-mid);
+  --color-acw-light: var(--acw-light);
+  --color-acw-tint:  var(--acw-tint);
+  --color-acw-alert: var(--acw-alert);
+  --color-acw-ink:   var(--acw-ink);
+  --color-acw-muted: var(--acw-muted);
+  --color-acw-rule:  var(--acw-rule);
+
+  --color-acw-amber-tint: var(--acw-amber-tint);
+  --color-acw-amber-ink:  var(--acw-amber-ink);
+  --color-acw-red-tint:   var(--acw-red-tint);
+  --color-acw-red-ink:    var(--acw-red-ink);
+
+  /* Headings in Instrument Sans, body in Inter. If Instrument Sans reads too
+     geometric on screen, delete it from --font-heading and the Inter fallback
+     takes over — the -0.02em tracking on headings below is already set up for
+     that case. */
+  --font-heading: "Instrument Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body:    "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  /* 6–8px only. Never pills. */
+  --radius-acw:    6px;
+  --radius-acw-lg: 8px;
+}
+
+/* ---------------------------------------------------------------------------
+   Base
+
+   These MUST stay inside @layer base. Unlayered CSS outranks every layered
+   rule, so an unlayered `h1 { color: ... }` would beat `text-white` on the
+   hero headline and render it dark-on-dark.
+--------------------------------------------------------------------------- */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    background-color: #fff;
+    color: var(--acw-ink);
+    font-family: var(--font-body);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Weights 400 and 500 only — nothing on this site is 700. */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    color: var(--acw-deep);
+    text-wrap: balance;
+  }
+
+  strong, b { font-weight: 500; }
+
+  :focus-visible {
+    outline: 2px solid var(--acw-mid);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+/* Small letterspaced caps — used by the wordmark, eyebrows and column heads. */
+@utility caps {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 500;
+}

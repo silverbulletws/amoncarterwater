@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import Flag from './Flag.astro';
+import { notices } from '../data/notices.js';
+
+const recent = notices.slice(0, 3);
+
+const fmt = (iso) =>
+  new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+    timeZone: 'America/Chicago',
+  }).format(new Date(`${iso}T12:00:00-05:00`));
+---
+
+<section aria-labelledby="notices-heading" class="border-b border-acw-rule bg-white">
+  <div class="mx-auto max-w-[1240px] px-5 pt-10 pb-16 sm:px-8 sm:pt-12 sm:pb-20">
+    <div class="flex flex-wrap items-end justify-between gap-4 rounded-acw-lg border border-acw-light/60 bg-acw-tint/50 px-7 py-6">
+      <div>
+        <h2 id="notices-heading" class="font-heading text-[26px] font-medium text-acw-deep">
+          Latest notices
+        </h2>
+        <p class="mt-2 max-w-[34rem] text-[16px] leading-relaxed text-acw-muted">
+          Outages, water quality updates, and anything else members need to know.
+        </p>
+      </div>
+
+      {/* TODO: destination pending — /notices */}
+      
+      <a href="/notices" class="inline-flex items-center gap-1.5 text-[15px] font-medium text-acw-green hover:underline">
+        All notices
+        <Icon name="arrow-right" class="h-4 w-4" />
+      </a>
+    </div>
+
+    <ul class="mt-2 divide-y divide-acw-rule">
+      {
+        recent.map((notice) => (
+          <li>
+            {/* TODO: destination pending — /notices/[slug] */}
+              <a href="/notices" class="group block px-7 py-7">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <time datetime={notice.date} class="text-[13px] text-acw-muted">
+                  {fmt(notice.date)}
+                </time>
+                <span class="text-acw-rule">&middot;</span>
+                <span class="caps text-[11px] text-acw-green">{notice.kind}</span>
+                {notice.placeholder && <Flag kind="demo" />}
+              </div>
+
+              <h3 class="mt-2 font-heading text-[19px] font-medium text-acw-deep group-hover:underline">
+                {notice.title}
+              </h3>
+
+              <p class="mt-2 max-w-[42rem] text-[16px] leading-relaxed text-acw-muted">
+                {notice.summary}
+              </p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

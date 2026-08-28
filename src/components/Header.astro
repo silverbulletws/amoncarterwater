@@ -1,0 +1,126 @@
+---
+import Icon from './Icon.astro';
+import { nav, contact } from '../data/nav.js';
+
+// Collapse point is xl (1280px), not lg. On the White's Magneto build tablets
+// were landing on the desktop layout and the nav crowded the wordmark; this
+// nav is one item longer, so it collapses at the same width.
+---
+
+<header class="sticky top-[var(--band-h,0px)] z-50 border-b border-acw-rule bg-white">
+  <div class="mx-auto flex max-w-[1240px] items-center gap-6 px-5 py-3.5 sm:px-8">
+    <!-- Mark + wordmark -->
+    <a href="/" class="flex shrink-0 items-center gap-3 text-acw-deep">
+      <span
+        class="flex h-10 w-10 items-center justify-center rounded-acw-lg bg-acw-green text-acw-tint"
+      >
+        <Icon name="droplet" class="h-5 w-5" />
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-heading text-[17px] font-medium tracking-[-0.01em] text-acw-deep">
+          Amon Carter Lake
+        </span>
+        <span class="caps mt-1 text-[9.5px] text-acw-muted">
+          Water Supply Corporation
+        </span>
+      </span>
+    </a>
+
+    <div class="flex-1"></div>
+
+    <!-- Desktop nav -->
+    <nav aria-label="Primary" class="hidden xl:block">
+      <ul class="flex items-center gap-8">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="text-[15px] text-acw-ink transition-colors hover:text-acw-green"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <!-- Report a problem never collapses into the menu, at any width. -->
+    <a
+      href={contact.emergency.tel}
+      class="shrink-0 rounded-acw bg-acw-alert px-4 py-2.5 caps text-[10px] font-semibold text-white transition-opacity hover:opacity-90 sm:px-5"
+    >
+      Report a Problem
+    </a>
+
+    <!-- Hamburger, below xl only -->
+    <button
+      type="button"
+      id="nav-toggle"
+      aria-expanded="false"
+      aria-controls="nav-panel"
+      class="-mr-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-acw text-acw-deep hover:bg-acw-tint xl:hidden"
+    >
+      <span class="sr-only">Menu</span>
+      <Icon name="menu" class="h-6 w-6" data-icon="open" />
+      <Icon name="x" class="hidden h-6 w-6" data-icon="close" />
+    </button>
+  </div>
+
+  <!-- Collapsed nav panel -->
+  <nav
+    id="nav-panel"
+    aria-label="Primary"
+    hidden
+    class="border-t border-acw-rule bg-white xl:hidden"
+  >
+    <ul class="mx-auto max-w-[1240px] px-5 py-2 sm:px-8">
+      {
+        nav.map((item) => (
+          <li class="border-b border-acw-rule/60 last:border-b-0">
+            <a href={item.href} class="block py-3.5 text-[16px] text-acw-ink">
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('nav-panel');
+
+  if (toggle && panel) {
+    const open = toggle.querySelector('[data-icon="open"]');
+    const close = toggle.querySelector('[data-icon="close"]');
+
+    const setOpen = (isOpen: boolean) => {
+      panel.hidden = !isOpen;
+      toggle.setAttribute('aria-expanded', String(isOpen));
+      open?.classList.toggle('hidden', isOpen);
+      close?.classList.toggle('hidden', !isOpen);
+    };
+
+    toggle.addEventListener('click', () => {
+      // `hidden` is typed `boolean | 'until-found'` in current lib.dom.
+      setOpen(Boolean(panel.hidden));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // Reset when the viewport grows past the xl breakpoint so the panel can't
+    // stay stuck open behind the desktop nav.
+    const wide = window.matchMedia('(min-width: 1280px)');
+    wide.addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+</script>

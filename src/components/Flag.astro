@@ -1,0 +1,59 @@
+---
+import { DEMO } from '../data/placeholder.js';
+
+/**
+ * Review marker for unfinished content. Renders only while DEMO is true.
+ *
+ *   demo    — invented for the demo, no basis in fact
+ *   verify  — taken from the old site, may be out of date
+ *   pending — real, but waiting on a document
+ *   draft   — accurate, wording not yet approved
+ *
+ * Hover shows the note. Pass `note` to say exactly what is needed.
+ */
+interface Props {
+  kind?: 'demo' | 'verify' | 'pending' | 'draft';
+  note?: string;
+}
+
+const { kind = 'demo', note } = Astro.props;
+
+const kinds = {
+  demo: {
+    label: 'demo',
+    class: 'bg-amber-200 text-amber-900',
+    note: 'Invented for the demo — not based on anything',
+  },
+  verify: {
+    label: 'verify',
+    class: 'bg-sky-200 text-sky-900',
+    note: 'From the old site — please confirm this is still correct',
+  },
+  pending: {
+    label: 'pending',
+    class: 'bg-stone-300 text-stone-800',
+    note: 'Waiting on a document',
+  },
+  draft: {
+    label: 'draft',
+    class: 'bg-violet-200 text-violet-900',
+    note: 'Accurate, but the wording needs approval',
+  },
+};
+
+const flag = kinds[kind] ?? kinds.demo;
+---
+
+{
+  DEMO && (
+    <span
+      title={note ?? flag.note}
+      class:list={[
+        'ml-1.5 inline-block rounded-sm px-1.5 py-0.5 align-middle text-[10px] font-medium tracking-wide uppercase',
+        flag.class,
+      ]}
+    >
+      {flag.label}
+    </span>
+  )
+}

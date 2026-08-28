@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  /** Page title. Omit on the homepage to use the full corporation name. */
+  title?: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Amon Carter Lake Water Supply Corporation provides Superior-rated potable water service to members around Lake Amon Carter, south of Bowie, Texas. System status, emergency leak reporting, billing and water quality information.',
+} = Astro.props;
+
+const SITE = 'Amon Carter Lake Water Supply Corporation';
+
+// Title template: the homepage gets the full name on its own, interior pages
+// get "Page · Amon Carter Lake WSC".
+const pageTitle = title ? `${title} · Amon Carter Lake WSC` : SITE;
+
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <meta name="theme-color" content="#04342C" />
+
+    <!-- Instrument Sans for headings, Inter for body. Weights 400 and 500 only. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Inter:wght@400;500&family=Dancing+Script:wght@600&display=swap"
+    />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+
+  <body class="font-body text-acw-ink antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-100 focus:rounded-acw focus:border focus:border-acw-rule focus:bg-white focus:px-4 focus:py-2 focus:text-acw-deep"
+    >
+      Skip to content
+    </a>
+
+    <slot />
+  </body>
+</html>

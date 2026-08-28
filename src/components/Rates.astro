@@ -1,0 +1,64 @@
+---
+import Icon from './Icon.astro';
+import Flag from './Flag.astro';
+import { monthly, connection, connectionTotal, otherLines, transferFee } from '../data/rates.js';
+---
+
+<section aria-labelledby="rates-heading" class="border-b border-acw-rule bg-white">
+  <div class="mx-auto max-w-[1240px] px-5 py-16 sm:px-8 sm:py-20">
+    <h2 id="rates-heading" class="font-heading text-[26px] font-medium text-acw-deep">
+      What water costs.
+      <Flag kind="verify" note="Every figure here is from 2019 and known to be out of date" />
+    </h2>
+    <p class="mt-2 max-w-[42rem] text-[16px] leading-relaxed text-acw-muted">
+      Rates are set by the board and filed with the Public Utility Commission of Texas.
+    </p>
+
+    <div class="mt-10 grid gap-4 lg:grid-cols-3">
+      <div class="rounded-acw-lg border border-acw-rule bg-acw-tint/40 p-7">
+        <h3 class="caps text-[11px] text-acw-green">Every month</h3>
+        <p class="mt-4 font-heading text-[40px] leading-none font-medium text-acw-deep">
+          {monthly.minimum}
+        </p>
+        <p class="mt-3 text-[15px] leading-relaxed text-acw-ink">
+          Minimum charge, including {monthly.includes}. You pay this whether you use water or not.
+        </p>
+        <p class="mt-4 border-t border-acw-rule pt-4 text-[15px] text-acw-muted">
+          Then <span class="font-medium text-acw-deep">{monthly.overage}</span> {monthly.overageUnit}.
+        </p>
+      </div>
+
+      <div class="rounded-acw-lg border border-acw-rule p-7 lg:col-span-2">
+        <h3 class="caps text-[11px] text-acw-green">To connect a new meter</h3>
+        <dl class="mt-4 divide-y divide-acw-rule">
+          {
+            connection.map((item) => (
+              <div class="flex items-baseline justify-between gap-6 py-3">
+                <dt class="text-[15px] text-acw-ink">
+                  {item.label}
+                  {item.note && <span class="mt-0.5 block text-[13px] text-acw-muted">{item.note}</span>}
+                </dt>
+                <dd class="shrink-0 font-heading text-[16px] font-medium text-acw-deep">{item.amount}</dd>
+              </div>
+            ))
+          }
+          <div class="flex items-baseline justify-between gap-6 py-4">
+            <dt class="font-heading text-[16px] font-medium text-acw-deep">Total for a 3/4 inch line</dt>
+            <dd class="shrink-0 font-heading text-[22px] font-medium text-acw-deep">{connectionTotal}</dd>
+          </div>
+        </dl>
+
+        <p class="mt-4 text-[14px] leading-relaxed text-acw-muted">
+          Larger lines cost more: {otherLines.map((l) => `${l.label} is ${l.amount}`).join(', ')}. You are
+          responsible for the piping from the meter to the house. Transferring an existing membership to a
+          new owner is {transferFee}.
+        </p>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <a href="/start-service" class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90">Start service<Icon name="arrow-right" class="h-4 w-4" /></a>
+          <a href="#transfer" class="inline-flex items-center gap-2 rounded-acw border border-acw-green/40 px-5 py-3 text-[15px] font-medium text-acw-deep transition-colors hover:border-acw-green hover:bg-acw-tint/40">Transfer service</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

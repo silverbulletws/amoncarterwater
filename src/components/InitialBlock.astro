@@ -1,0 +1,32 @@
+---
+/**
+ * One section of the service agreement, with its own initials field.
+ *
+ * Splitting the agreement into initialed blocks rather than one scrolling panel
+ * means each material term — particularly the $750 liquidated damages clause —
+ * is acknowledged on its own rather than buried in a wall of text.
+ *
+ * TODO: section groupings and headings are ours, not the corporation's. The
+ * underlying text is verbatim from USDA Form FmHA TX-442-11 as revised 03/2021
+ * by ACLWSC. For review by the corporation's attorney before go-live.
+ */
+interface Props {
+  id: string;
+  heading: string;
+}
+const { id, heading } = Astro.props;
+---
+
+<div class="rounded-acw-lg border border-acw-rule bg-white p-6 sm:p-7" data-initial-block>
+  <h3 class="font-heading text-[17px] font-medium text-acw-deep">{heading}</h3>
+
+  <div class="mt-3 space-y-3 text-[14px] leading-relaxed text-acw-muted">
+    <slot />
+  </div>
+
+  <div class="mt-5 flex items-center justify-end gap-3 border-t border-acw-rule pt-4">
+    <label for={`initial-${id}`} class="text-[13px] font-medium text-acw-deep">Initial here</label>
+    <input type="text" id={`initial-${id}`} name={`initial_${id}`} required maxlength="4" size="4" autocomplete="off" data-initial-input class="w-[72px] rounded-acw border border-acw-rule bg-acw-tint/30 px-3 py-2 text-center text-[16px] tracking-widest text-acw-ink uppercase outline-none focus:border-acw-green" />
+    <input type="hidden" name={`initial_${id}_at`} data-initial-time />
+  </div>
+</div>

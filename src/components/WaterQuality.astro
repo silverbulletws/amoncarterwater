@@ -1,0 +1,69 @@
+---
+import Icon from './Icon.astro';
+import Flag from './Flag.astro';
+---
+
+<section aria-labelledby="wq-heading" class="border-b border-acw-rule bg-acw-tint/40">
+  <div class="mx-auto grid max-w-[1240px] gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-16">
+    <div>
+      <h2 id="wq-heading" class="font-heading text-[26px] font-medium text-acw-deep">
+        Is the water safe?
+      </h2>
+
+      <p class="mt-4 max-w-[34rem] text-[17px] leading-relaxed text-acw-ink">
+        Yes. Our system carries a Superior rating from the Texas Commission on
+        Environmental Quality &mdash; the highest classification a public water
+        system can hold in Texas.
+        <Flag kind="verify" note="Is the Superior rating still current?" />
+      </p>
+
+      <p class="mt-4 max-w-[34rem] text-[16px] leading-relaxed text-acw-muted">
+        We purchase treated water from the City of Bowie and deliver it through
+        our own lines and equipment to your meter. Water is tested on a schedule
+        set by the state, and the results are published every year in the
+        Consumer Confidence Report.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        {/* TODO: destination pending — the 2025 CCR PDF */}
+        <a
+          href="#ccr"
+          class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90"
+        >
+          <Icon name="file" class="h-4 w-4" />
+          Read the 2025 water report
+          <Flag kind="pending" note="Awaiting the 2025 CCR PDF" />
+        </a>
+
+        {/* TODO: destination pending — /water-quality */}
+        <a
+          href="#water-quality"
+          class="inline-flex items-center gap-2 rounded-acw border border-acw-green/40 px-5 py-3 text-[15px] font-medium text-acw-deep transition-colors hover:border-acw-green hover:bg-white"
+        >
+          Past reports
+        </a>
+      </div>
+    </div>
+
+    <dl class="grid grid-cols-2 gap-px self-center overflow-hidden rounded-acw-lg border border-acw-rule bg-acw-rule">
+      <div class="bg-white p-6">
+        <dt class="caps text-[11px] text-acw-muted">TCEQ rating</dt>
+        <dd class="mt-2 font-heading text-[22px] font-medium text-acw-deep">Superior</dd>
+      </div>
+      <div class="bg-white p-6">
+        <dt class="caps text-[11px] text-acw-muted">Water source</dt>
+        <dd class="mt-2 font-heading text-[22px] font-medium text-acw-deep">City of Bowie</dd>
+      </div>
+      <div class="bg-white p-6">
+        <dt class="caps text-[11px] text-acw-muted">Public water system</dt>
+        <dd class="mt-2 font-heading text-[22px] font-medium text-acw-deep">1690023</dd>
+      </div>
+      <div class="bg-white p-6">
+        <dt class="caps text-[11px] text-acw-muted">Latest report</dt>
+        <dd class="mt-2 font-heading text-[22px] font-medium text-acw-deep">
+          2025 <Flag kind="pending" />
+        </dd>
+      </div>
+    </dl>
+  </div>
+</section>

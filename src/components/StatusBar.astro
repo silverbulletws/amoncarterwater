@@ -1,0 +1,181 @@
+---
+import Icon from './Icon.astro';
+import status from '../data/status.js';
+import { statuses } from '../data/statuses.js';
+
+/**
+ * The status bar reads entirely from src/data/status.json. There is no status
+ * markup anywhere else in the site, and there must not be.
+ *
+ * When the tool Ross uses from his truck gets built, its only job is writing
+ * that one small object. Hardcoding the status here would make that a rewrite;
+ * keeping it as data makes it a swap.
+ *
+ * ---------------------------------------------------------------------------
+ * TO PREVIEW EACH STATE: edit `level` in src/data/status.json and reload.
+ *
+ *   { "level": "normal",   "headline": "All systems A-OK",
+ *     "detail": "Water is safe to drink, no advisories in effect" }
+ *
+ *   { "level": "advisory", "headline": "Water conservation advisory",
+ *     "detail": "Please limit outdoor watering until further notice" }
+ *
+ *   { "level": "boil",     "headline": "Boil water notice in effect",
+ *     "detail": "Bring water to a rolling boil for two minutes before drinking or cooking" }
+ *
+ *   { "level": "outage",   "headline": "Service outage",
+ *     "detail": "Crews are on site. We will post here as soon as service is restored" }
+ *
+ * `normal` and `advisory` render as a slim strip below the header. `boil` and
+ * `outage` render as a full-width band above the header, pushing the page down.
+ * No editing interface — that is deliberately out of scope.
+ * ---------------------------------------------------------------------------
+ */
+
+type Level = 'normal' | 'advisory' | 'boil' | 'outage';
+
+interface Props {
+  /**
+   * Where this instance sits in the page. Render both in Layout/index and each
+   * one shows up only for the levels that belong in that slot, so the
+   * placement rule lives here rather than in the page.
+   */
+  placement: 'strip' | 'band';
+}
+
+const { placement } = Astro.props;
+
+// Full Tailwind class strings, written out literally — Tailwind scans source
+// text, so these must never be assembled from fragments.
+const presentation = {
+  normal: {
+    placement: 'strip',
+    surface: 'bg-acw-tint text-acw-deep',
+    rule: 'border-acw-light',
+    pad: 'py-2.5',
+    icon: null,
+    label: 'System status',
+  },
+  advisory: {
+    placement: 'strip',
+    surface: 'bg-acw-amber-tint text-acw-amber-ink',
+    rule: 'border-acw-amber-ink/20',
+    pad: 'py-3.5',
+    icon: 'alert-triangle',
+    label: 'Water advisory',
+  },
+  boil: {
+    placement: 'band',
+    surface: 'bg-acw-red-ink text-white',
+    rule: 'border-black/20',
+    pad: 'py-5',
+    icon: 'alert-octagon',
+    label: 'Boil water notice',
+  },
+  outage: {
+    placement: 'band',
+    surface: 'bg-acw-red-ink text-white',
+    rule: 'border-black/20',
+    pad: 'py-5',
+    icon: 'droplet-off',
+    label: 'Service outage',
+  },
+} as const;
+
+const level = status.level as Level;
+const state = presentation[level] ?? presentation.normal;
+const copy = statuses[level] ?? statuses.normal;
+
+// Only render in the slot this level belongs to.
+const active = state.placement === placement;
+
+// "Updated 21 Aug, 9:14 AM" — Bowie is US Central, so format there explicitly
+// rather than inheriting whatever timezone the build machine happens to use.
+const updatedAt = new Date(status.updated);
+const TZ = 'America/Chicago';
+
+const day = new Intl.DateTimeFormat('en-GB', {
+  day: 'numeric',
+  month: 'short',
+  timeZone: TZ,
+}).format(updatedAt);
+
+const time = new Intl.DateTimeFormat('en-US', {
+  hour: 'numeric',
+  minute: '2-digit',
+  hour12: true,
+  timeZone: TZ,
+}).format(updatedAt);
+
+const updatedAbsolute = `${day}, ${time}`;
+const isBand = placement === 'band';
+---
+
+{
+  active && (
+    <div
+      class:list={[
+        'w-full border-b',
+        state.surface,
+        state.rule,
+        isBand ? 'sticky top-0 z-60 border-b-2' : '',
+      ]}
+      role={isBand ? 'region' : undefined}
+      aria-labelledby={isBand ? 'status-label' : undefined}
+    >
+      <div
+        class:list={[
+          'mx-auto flex max-w-[1240px] flex-wrap items-baseline gap-x-3 gap-y-1 px-5 sm:px-8',
+          state.pad,
+        ]}
+      >
+        <span class="flex h-[1lh] shrink-0 items-center self-start text-[14px]">
+          {state.icon ? (
+            <Icon name={state.icon} class={isBand ? 'h-5 w-5' : 'h-4 w-4'} />
+          ) : (
+            /* normal — a filled dot, not an icon */
+            <span class="block h-2.5 w-2.5 rounded-full bg-acw-mid" />
+          )}
+        </span>
+
+        <span id="status-label" class="sr-only">{state.label}</span>
+
+        <p class="caps font-heading text-[14px] font-semibold">
+          {copy.headline}
+        </p>
+
+        <p class="text-[13px] opacity-90">
+          {copy.detail}
+        </p>
+
+        <p class="ml-auto shrink-0 text-[13px] opacity-70">
+          Updated{' '}
+          <time datetime={status.updated} data-status-updated>
+            {updatedAbsolute}
+          </time>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+<script>
+  /**
+   * Progressive enhancement only: appends the relative half of the
+   * "relative-plus-absolute" timestamp. The absolute string is already rendered
+   * at build time, so this adds nothing the reader strictly needs — but a
+   * static build can't compute "today" ahead of time without going stale, and
+   * "Updated 21 Aug, 9:14 AM · today" is what actually reassures someone
+   * checking whether the notice is current.
+   */
+  for (const el of document.querySelectorAll<HTMLTimeElement>('[data-status-updated]')) {
+    const then = new Date(el.dateTime);
+    if (Number.isNaN(then.getTime())) continue;
+
+    const days = Math.floor((Date.now() - then.getTime()) / 86_400_000);
+    const relative =
+      days < 0 ? null : days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+
+    if (relative) el.insertAdjacentText('afterend', ` · ${relative}`);
+  }
+</script>

@@ -1,0 +1,155 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import StatusBar from '../components/StatusBar.astro';
+import Footer from '../components/Footer.astro';
+import SignaturePad from '../components/SignaturePad.astro';
+import Flag from '../components/Flag.astro';
+import { contact } from '../data/nav.js';
+
+const field = 'w-full rounded-acw border border-acw-rule bg-white px-4 py-3 text-[16px] text-acw-ink outline-none focus:border-acw-green';
+const label = 'block text-[14px] font-medium text-acw-deep';
+---
+
+<Layout title="Bank draft application">
+  <StatusBar placement="band" />
+  <Header />
+  <StatusBar placement="strip" />
+
+  <main id="main" class="bg-acw-tint/20">
+    <div class="mx-auto max-w-[820px] px-5 py-14 sm:px-8 sm:py-20">
+      <h1 class="font-heading text-[32px] leading-tight font-medium text-acw-deep">Set up bank draft</h1>
+      <p class="mt-3 text-[17px] leading-relaxed text-acw-muted">
+        Have your monthly water bill drafted automatically. Drafts are processed around the 10th of each
+        month, and you will still receive your bill beforehand so you always know the amount.
+      </p>
+
+      <form class="mt-10 space-y-8" novalidate>
+        <fieldset class="rounded-acw-lg border border-acw-rule bg-white p-7">
+          <legend class="caps px-2 text-[11px] text-acw-green">Your account</legend>
+
+          <div class="mt-4 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="account" class={label}>ACLWSC account number</label>
+              <input type="text" id="account" name="account" required inputmode="numeric" class={`mt-2 ${field}`} />
+              <p class="mt-1.5 text-[13px] text-acw-muted">Printed at the top of your bill.</p>
+            </div>
+            <div>
+              <label for="phone" class={label}>Telephone</label>
+              <input type="tel" id="phone" name="phone" required autocomplete="tel" class={`mt-2 ${field}`} />
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <label for="name" class={label}>Name on the account</label>
+            <input type="text" id="name" name="name" required autocomplete="name" class={`mt-2 ${field}`} />
+          </div>
+
+          <div class="mt-5">
+            <label for="street" class={label}>Service address</label>
+            <input type="text" id="street" name="street" required autocomplete="address-line1" placeholder="Street address" class={`mt-2 ${field}`} />
+          </div>
+
+          <div class="mt-4 grid gap-4 sm:grid-cols-[1fr_140px_160px]">
+            <div>
+              <label for="city" class={label}>City</label>
+              <input type="text" id="city" name="city" required autocomplete="address-level2" value="Bowie" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="state" class={label}>State</label>
+              <input type="text" id="state" name="state" required autocomplete="address-level1" value="TX" maxlength="2" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="zip" class={label}>ZIP</label>
+              <input type="text" id="zip" name="zip" required autocomplete="postal-code" inputmode="numeric" value="76230" class={`mt-2 ${field}`} />
+            </div>
+          </div>
+
+          <label class="mt-5 flex gap-3 text-[15px] text-acw-ink">
+            <input type="checkbox" id="diff-billing" name="different_billing" data-toggle-billing class="mt-0.5 h-4 w-4 shrink-0 accent-[#0F6E56]" />
+            <span>My bill goes to a different address</span>
+          </label>
+
+          <div data-billing-fields hidden class="mt-5 rounded-acw border border-acw-rule bg-acw-tint/30 p-5">
+            <p class="caps text-[11px] text-acw-green">Billing address</p>
+
+            <div class="mt-4">
+              <label for="bill-street" class={label}>Street address</label>
+              <input type="text" id="bill-street" name="bill_street" class={`mt-2 ${field}`} />
+            </div>
+
+            <div class="mt-4 grid gap-4 sm:grid-cols-[1fr_140px_160px]">
+              <div>
+                <label for="bill-city" class={label}>City</label>
+                <input type="text" id="bill-city" name="bill_city" class={`mt-2 ${field}`} />
+              </div>
+              <div>
+                <label for="bill-state" class={label}>State</label>
+                <input type="text" id="bill-state" name="bill_state" maxlength="2" class={`mt-2 ${field}`} />
+              </div>
+              <div>
+                <label for="bill-zip" class={label}>ZIP</label>
+                <input type="text" id="bill-zip" name="bill_zip" inputmode="numeric" class={`mt-2 ${field}`} />
+              </div>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="rounded-acw-lg border border-acw-rule bg-white p-7">
+          <legend class="caps px-2 text-[11px] text-acw-green">Your bank</legend>
+
+          <div class="mt-4">
+            <label for="bank" class={label}>Bank name</label>
+            <input type="text" id="bank" name="bank" required class={`mt-2 ${field}`} />
+          </div>
+
+          <div class="mt-5 rounded-acw border border-dashed border-acw-rule bg-acw-tint/40 p-5">
+            <p class="text-[15px] font-medium text-acw-deep">
+              Account and routing numbers
+              <Flag kind="pending" note="Bank details must be collected through a payment processor, not this form" />
+            </p>
+            <p class="mt-2 text-[14px] leading-relaxed text-acw-muted">
+              These are collected separately and securely. For now, call the office at
+              <a href={contact.office.tel} class="text-acw-green underline">{contact.office.display}</a>
+              or use the printable form below.
+            </p>
+          </div>
+        </fieldset>
+
+        <fieldset class="rounded-acw-lg border border-acw-rule bg-white p-7">
+          <legend class="caps px-2 text-[11px] text-acw-green">Authorization</legend>
+
+          <p class="mt-4 text-[15px] leading-relaxed text-acw-ink">
+            By signing below, I authorize Amon Carter Lake Water Supply Corporation to draft my regular
+            monthly water bill from the financial institution named above. This authorization remains
+            valid until I terminate the bank draft service.
+          </p>
+
+          <div class="mt-6">
+            <SignaturePad name="signature" label="Member signature" />
+          </div>
+        </fieldset>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button type="submit" class="rounded-acw bg-acw-deep px-6 py-3.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90">Submit application</button>
+          <a href="/forms/bank_draft_application.pdf" target="_blank" rel="noopener" class="text-[15px] text-acw-green underline">Open the printable form <span class="text-acw-muted">(PDF opens in a new tab)</span></a>
+        </div>
+
+        {/* TODO: no submit handler. Needs a Worker endpoint, spam protection, and a decision on where submissions land — the office has no working inbox. */}
+      </form>
+    </div>
+  </main>
+  <Footer />
+  <script>
+  const toggle = document.querySelector('[data-toggle-billing]');
+  const panel = document.querySelector('[data-billing-fields]');
+  toggle?.addEventListener('change', () => {
+    if (!panel) return;
+    panel.hidden = !toggle.checked;
+    for (const input of panel.querySelectorAll('input')) {
+      input.required = toggle.checked;
+      if (!toggle.checked) input.value = '';
+    }
+  });
+</script>
+</Layout>

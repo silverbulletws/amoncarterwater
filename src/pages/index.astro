@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import StatusBar from '../components/StatusBar.astro';
+import Hero from '../components/Hero.astro';
+import TaskGrid from '../components/TaskGrid.astro';
+import Footer from '../components/Footer.astro';
+import Notices from '../components/Notices.astro';
+import WaterQuality from '../components/WaterQuality.astro';
+import status from '../data/status.js';
+import Rates from '../components/Rates.astro';
+
+---
+
+<Layout>
+  <div style={['boil', 'outage'].includes(status.level) ? '--band-h: 64px' : ''}>
+  {/*
+    Two StatusBar slots, one on each side of the header. Each renders only for
+    the levels that belong in it, so a boil-water or outage notice arrives as a
+    full-width band above the header and pushes the page down, while normal and
+    advisory sit as a slim strip beneath it. Nothing here needs changing to
+    switch states — only src/data/status.json does.
+  */}
+  <StatusBar placement="band" />
+
+  <Header />
+
+  <StatusBar placement="strip" />
+
+  <main id="main">
+    <Hero image="/images/lakeside-1920x1024.webp" />
+    <TaskGrid />
+    <Notices />
+    <WaterQuality />
+    <Rates />
+  </main>
+
+  <Footer />
+  </div>
+</Layout>

@@ -1,0 +1,248 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import StatusBar from '../components/StatusBar.astro';
+import Footer from '../components/Footer.astro';
+import SignaturePad from '../components/SignaturePad.astro';
+import InitialBlock from '../components/InitialBlock.astro';
+import Flag from '../components/Flag.astro';
+import { contact } from '../data/nav.js';
+
+const field = 'w-full rounded-acw border border-acw-rule bg-white px-4 py-3 text-[16px] text-acw-ink outline-none focus:border-acw-green';
+const label = 'block text-[14px] font-medium text-acw-deep';
+const legend = 'caps px-2 text-[11px] text-acw-green';
+const card = 'rounded-acw-lg border border-acw-rule bg-white p-7';
+---
+
+<Layout title="Apply for water service">
+  <StatusBar placement="band" />
+  <Header />
+  <StatusBar placement="strip" />
+
+  <main id="main" class="bg-acw-tint/20">
+    <div class="mx-auto max-w-[820px] px-5 py-14 sm:px-8 sm:py-20">
+      <h1 class="font-heading text-[32px] leading-tight font-medium text-acw-deep">Apply for water service</h1>
+      <p class="mt-3 text-[17px] leading-relaxed text-acw-muted">
+        This is the Service Application and Agreement required by the State of Texas. Read each section,
+        initial it, and sign at the bottom. We will contact you about installation costs once we have
+        your application.
+      </p>
+
+      <form class="mt-10 space-y-8" novalidate>
+        <fieldset class={card}>
+          <legend class={legend}>Applicant</legend>
+
+          <div class="mt-4 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="applicant" class={label}>Applicant name</label>
+              <input type="text" id="applicant" name="applicant" required autocomplete="name" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="co-applicant" class={label}>Co-applicant name <span class="font-normal text-acw-muted">(optional)</span></label>
+              <input type="text" id="co-applicant" name="co_applicant" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="phone-home" class={label}>Home phone</label>
+              <input type="tel" id="phone-home" name="phone_home" required autocomplete="tel" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="phone-work" class={label}>Work phone <span class="font-normal text-acw-muted">(optional)</span></label>
+              <input type="tel" id="phone-work" name="phone_work" class={`mt-2 ${field}`} />
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <label for="email" class={label}>Email address</label>
+            <input type="email" id="email" name="email" required autocomplete="email" class={`mt-2 ${field}`} />
+          </div>
+        </fieldset>
+
+        <fieldset class={card}>
+          <legend class={legend}>Property to be served</legend>
+
+          <div class="mt-4">
+            <label for="street" class={label}>Street address</label>
+            <input type="text" id="street" name="street" required autocomplete="address-line1" class={`mt-2 ${field}`} />
+            <p class="mt-1.5 text-[13px] text-acw-muted">
+              Must be your 9-1-1 address, prominently displayed on the property for both utility service
+              and emergency response. Reflective numbers on the mailbox are recommended.
+            </p>
+          </div>
+
+          <div class="mt-4 grid gap-4 sm:grid-cols-[1fr_140px_160px]">
+            <div>
+              <label for="city" class={label}>City</label>
+              <input type="text" id="city" name="city" required autocomplete="address-level2" value="Bowie" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="state" class={label}>State</label>
+              <input type="text" id="state" name="state" required maxlength="2" value="TX" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="zip" class={label}>ZIP</label>
+              <input type="text" id="zip" name="zip" required inputmode="numeric" value="76230" class={`mt-2 ${field}`} />
+            </div>
+          </div>
+
+          <div class="mt-5 grid gap-5 sm:grid-cols-2">
+            <div>
+              <label for="acreage" class={label}>Acreage</label>
+              <input type="text" id="acreage" name="acreage" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="sqft" class={label}>Square footage</label>
+              <input type="text" id="sqft" name="sqft" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="family" class={label}>Number in family</label>
+              <input type="text" id="family" name="family" inputmode="numeric" class={`mt-2 ${field}`} />
+            </div>
+            <div>
+              <label for="livestock" class={label}>Livestock and number</label>
+              <input type="text" id="livestock" name="livestock" class={`mt-2 ${field}`} />
+            </div>
+          </div>
+
+          <div class="mt-5">
+            <label for="ownership" class={label}>Proof of ownership provided by</label>
+            <input type="text" id="ownership" name="ownership" required class={`mt-2 ${field}`} />
+          </div>
+
+           <div class="mt-6">
+            <p class={label}>Is this a new property or an existing one?</p>
+            <div class="mt-3 flex flex-wrap gap-3">
+              <label class="flex cursor-pointer items-center gap-2.5 py-1 text-[15px] text-acw-ink">
+                <input type="radio" name="property_type" value="new" required data-property-type class="h-4 w-4 accent-[#0F6E56]" />
+                New property
+              </label>
+              <label class="flex cursor-pointer items-center gap-2.5 py-1 text-[15px] text-acw-ink">
+                <input type="radio" name="property_type" value="existing" required data-property-type class="h-4 w-4 accent-[#0F6E56]" />
+                Existing property
+              </label>
+            </div>
+          </div>
+
+          <div data-property-panel="new" hidden class="mt-5">
+            <label for="legal" class={label}>Legal description</label>
+            <textarea id="legal" name="legal" rows="3" class={`mt-2 ${field}`}></textarea>
+            <p class="mt-1.5 text-[13px] text-acw-muted">Include road, subdivision, lot, and block. A map of the service location is required for new property.</p>
+          </div>
+
+          <div data-property-panel="existing" hidden class="mt-5">
+            <label for="previous" class={label}>Previous owner's name and address</label>
+            <textarea id="previous" name="previous" rows="3" class={`mt-2 ${field}`}></textarea>
+          </div>
+
+          <div class="mt-5">
+            <label for="needs" class={label}>Special service needs <span class="font-normal text-acw-muted">(optional)</span></label>
+            <input type="text" id="needs" name="needs" class={`mt-2 ${field}`} />
+          </div>
+
+          <div class="mt-6 rounded-acw border border-dashed border-acw-rule bg-acw-tint/40 p-5">
+            <p class="text-[15px] font-medium text-acw-deep">
+              Driver's license number
+              <Flag kind="pending" note="Government ID — must not be collected through an ordinary form handler" />
+            </p>
+            <p class="mt-2 text-[14px] leading-relaxed text-acw-muted">
+              Collected separately. Call the office at <a href={contact.office.tel} class="text-acw-green underline">{contact.office.display}</a>, or use the printable form.
+            </p>
+          </div>
+
+          <div class="mt-4 rounded-acw border border-dashed border-acw-rule bg-acw-tint/40 p-5">
+            <p class="text-[15px] font-medium text-acw-deep">
+              Race and national origin
+              <Flag kind="pending" note="Federal USDA monitoring block — the form requires recording by observation if declined, which a web form cannot do" />
+            </p>
+            <p class="mt-2 text-[14px] leading-relaxed text-acw-muted">
+              Requested by the federal government to monitor compliance with anti-discrimination laws.
+              Not currently collected here.
+            </p>
+          </div>
+        </fieldset>
+
+        <div>
+          <h2 class="font-heading text-[22px] font-medium text-acw-deep">The agreement</h2>
+          <p class="mt-2 text-[15px] leading-relaxed text-acw-muted">
+            Please read each section and enter your initials to acknowledge it.
+            <Flag kind="draft" note="Section groupings are ours; the text is from the USDA form. For attorney review." />
+          </p>
+
+          <div class="mt-6 space-y-4">
+            <InitialBlock id="membership" heading="Membership and the tariff">
+              <p>The Corporation shall sell and deliver water service to the Applicant, and the Applicant shall purchase, receive, and/or reserve service from the Corporation in accordance with the Bylaws and Tariff of the Corporation as amended from time to time by the Board of Directors.</p>
+              <p>Upon compliance with said policies, including payment of a Membership Fee, the Applicant qualifies for Membership. The Board of Directors shall have the authority to cancel the Membership of any Member not complying with any policy or not paying any utility fees or charges as required by the Corporation's published rates, fees, and conditions of service.</p>
+            </InitialBlock>
+
+            <InitialBlock id="damages" heading="Fees and liquidated damages">
+              <p>Applicant agrees to pay, upon becoming a Member, the monthly charges for such service as prescribed in the Corporation's published rates, fees, and conditions of service.</p>
+              <p><strong class="text-acw-deep">Any breach of this agreement shall give cause for the Corporation to liquidate, as damages, the fees previously paid as an indication of interest. In addition, the Corporation may assess a lump sum of $750.00 as liquidated damages.</strong></p>
+              <p>If delivery of service to said location is deemed infeasible by the Corporation, the Applicant shall be denied Membership and the Indication of Interest Fee, less expenses, shall be refunded.</p>
+            </InitialBlock>
+
+            <InitialBlock id="metering" heading="Metering and use of service">
+              <p>All water shall be metered by meters furnished and installed by the Corporation. The meter is for the sole use of the Member and is to provide service to only one dwelling and/or only one business.</p>
+              <p>Extension of pipes to transfer utility service from one property to another, to share, resell, or sub-meter water to any other person, dwelling, business, or property is prohibited. The Corporation strictly prohibits the connection of service pipelines from its water service meter to any private well or other unknown water supply.</p>
+              <p>In the event of a water shortage, the Corporation may initiate the Drought Contingency Program as approved by the Texas Commission on Environmental Quality, and the Applicant agrees to comply with its terms.</p>
+            </InitialBlock>
+
+            <InitialBlock id="access" heading="Access and easements">
+              <p>The Corporation shall have the right to locate a water service meter and the necessary connecting pipe at a point of its choosing, and shall have access to its property and equipment on the Member's premises at all reasonable times. Upon discontinuance of service the Corporation may remove its equipment.</p>
+              <p>Authorized employees shall have access to the Member's property, service lines, and plumbing facilities at all reasonable times for inspection, to ensure compliance with state Minimum Acceptable Operating Practices for Public Drinking Water Systems, applicable plumbing codes, and utility construction standards.</p>
+              <p>The Member shall grant to the Corporation, now or in the future, any easements or rights-of-way necessary to install, maintain, and operate pipelines, meters, valves, and other equipment.</p>
+            </InitialBlock>
+
+            <InitialBlock id="responsibility" heading="Member responsibilities">
+              <p>The Member shall install at his own expense any necessary service lines from the Corporation's facilities to the point of use, including isolation valves, clean-outs, and cut-offs. <strong class="text-acw-deep">A cut-off on the customer's line from the meter to the residence is mandatory.</strong></p>
+              <p>Pipes and fittings containing more than 0.25% lead, or solder and flux containing more than 0.2% lead, are prohibited for any plumbing installation or repair providing water for human consumption.</p>
+              <p>The Member holds the Corporation harmless from all claims for damages caused by service interruptions due to waterline breaks, tampering by other Members, normal failures of the system, or other events beyond the Corporation's control.</p>
+              <p>Any misrepresentation of the facts by the Applicant on any part of this form shall result in discontinuance of service pursuant to the Corporation's Tariff.</p>
+            </InitialBlock>
+          </div>
+        </div>
+
+        <fieldset class={card}>
+          <legend class={legend}>Signature</legend>
+          <p class="mt-4 text-[15px] leading-relaxed text-acw-ink">
+            By signing, I acknowledge that I have read and agree to the Service Application and Agreement above.
+          </p>
+          <div class="mt-6">
+            <SignaturePad name="signature" label="Applicant signature" />
+          </div>
+        </fieldset>
+
+        <div class="flex flex-wrap items-center gap-4">
+          <button type="submit" class="rounded-acw bg-acw-deep px-6 py-3.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90">Submit application</button>
+          <a href="/forms/Application_for_Service.pdf" target="_blank" rel="noopener" class="text-[15px] text-acw-green underline">Open the printable form <span class="text-acw-muted">(PDF, opens in a new tab)</span></a>
+        </div>
+
+        {/* TODO: no submit handler. Needs a Worker endpoint, spam protection, and somewhere for submissions to land. */}
+      </form>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<script>
+  for (const input of document.querySelectorAll('[data-initial-input]')) {
+    const stamp = input.closest('[data-initial-block]')?.querySelector('[data-initial-time]');
+    input.addEventListener('input', () => {
+      input.value = input.value.toUpperCase();
+      if (stamp) stamp.value = input.value.trim() ? new Date().toISOString() : '';
+    });
+  }
+  const panels = document.querySelectorAll('[data-property-panel]');
+  for (const radio of document.querySelectorAll('[data-property-type]')) {
+    radio.addEventListener('change', () => {
+      for (const panel of panels) {
+        const active = panel.dataset.propertyPanel === radio.value;
+        panel.hidden = !active;
+        const box = panel.querySelector('textarea');
+        if (box) {
+          box.required = active;
+          if (!active) box.value = '';
+        }
+      }
+    });
+  }
+</script>

@@ -1,0 +1,126 @@
+---
+import Icon from './Icon.astro';
+import { contact, quickLinks, identifiers } from '../data/nav.js';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="bg-acw-deep text-acw-light">
+  <div class="mx-auto max-w-[1240px] px-5 py-16 sm:px-8">
+    <div class="grid gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
+      <!-- 1. Contact. Emergency first: the office is not staffed, so most -->
+      <!--    urgent contact happens outside it.                            -->
+      <div>
+        <h2 class="caps text-[11px] text-acw-light/60">Contact</h2>
+
+        <a href={contact.emergency.tel} class="mt-5 block group">
+          <span class="block text-[12px] text-acw-light/70">
+            {contact.emergency.label}
+          </span>
+          <span
+            class="mt-1 block font-heading text-[24px] font-medium text-white group-hover:underline"
+          >
+            {contact.emergency.display}
+          </span>
+          <span class="mt-1 flex items-center gap-1.5 text-[13px] text-acw-mid">
+            <span class="block h-2 w-2 rounded-full bg-acw-mid"></span>
+            {contact.emergency.note}
+          </span>
+        </a>
+
+        <a href={contact.office.tel} class="mt-6 block group">
+          <span class="block text-[12px] text-acw-light/70">
+            {contact.office.label}
+          </span>
+          <span class="mt-0.5 block text-[16px] text-white group-hover:underline">
+            {contact.office.display}
+          </span>
+        </a>
+
+        <a
+          href={`mailto:${contact.email}`}
+          class="mt-4 flex items-center gap-2 text-[15px] hover:text-white"
+        >
+          <Icon name="mail" class="h-4 w-4 shrink-0 text-acw-green" />
+          {contact.email}
+        </a>
+
+        <div class="mt-5 flex gap-2 text-[14px] leading-relaxed text-acw-light/80">
+          <Icon name="map-pin" class="mt-0.5 h-4 w-4 shrink-0 text-acw-green" />
+          <address class="not-italic">
+            {contact.mail.map((line) => <span class="block">{line}</span>)}
+            <span class="mt-2 block text-acw-light/60">Office</span>
+            {contact.office_address.map((line) => <span class="block">{line}</span>)}
+          </address>
+        </div>
+      </div>
+
+      <!-- 2. Quick links -->
+      <nav aria-label="Footer">
+        <h2 class="caps text-[11px] text-acw-light/60">Quick links</h2>
+        <ul class="mt-5 space-y-3">
+          {
+            quickLinks.map((link) => (
+              <li>
+                <a href={link.href} class="text-[15px] hover:text-white">
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- 3. About the corporation -->
+      <div>
+        <h2 class="caps text-[11px] text-acw-light/60">About the corporation</h2>
+        <p class="mt-5 max-w-[26rem] text-[15px] leading-relaxed text-acw-light/80">
+          A non-profit, member-owned and member-controlled corporation supplying
+          Superior-rated potable water to members around Lake Amon Carter.
+        </p>
+        <dl class="mt-6 space-y-2 text-[14px]">
+          <div class="flex gap-2">
+            <dt class="text-acw-light/60">PUC CCN</dt>
+            <dd class="text-white">{identifiers.ccn}</dd>
+          </div>
+          <div class="flex gap-2">
+            <dt class="text-acw-light/60">TCEQ PWS</dt>
+            <dd class="text-white">{identifiers.pws}</dd>
+          </div>
+          <div class="flex gap-2">
+            <dt class="text-acw-light/60">County</dt>
+            <dd class="text-white">{identifiers.county}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <!-- 4. Facebook — the corporation's established second channel -->
+      <div>
+        <h2 class="caps text-[11px] text-acw-light/60">Follow along</h2>
+        <p class="mt-5 max-w-[24rem] text-[15px] leading-relaxed text-acw-light/80">
+          Notices also go out on Facebook. Worth following if you would rather
+          hear about a line break there than here.
+        </p>
+        <a
+          href={contact.facebook.href}
+          rel="noopener noreferrer"
+          target="_blank"
+          class="mt-5 inline-flex items-center gap-2.5 rounded-acw border border-acw-green px-4 py-2.5 text-[14px] font-medium text-white transition-colors hover:bg-acw-green"
+        >
+          <Icon name="facebook" class="h-4 w-4" />
+          {contact.facebook.label}
+        </a>
+      </div>
+    </div>
+
+    <!-- Bottom rule -->
+    <div
+      class="mt-14 flex flex-col gap-3 border-t border-acw-green/40 pt-6 text-[12.5px] text-acw-light/55 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <p>
+        &copy; {year} Amon Carter Lake Water Supply Corporation. Bowie, Texas.
+      </p>
+      <p>Site by SBWS</p>
+    </div>
+  </div>
+</footer>
