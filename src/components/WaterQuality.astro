@@ -26,14 +26,11 @@ import Flag from './Flag.astro';
       <div class="mt-8 flex flex-wrap gap-3">
         <a href="/reports/ccr-2025.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90"><Icon name="file" class="h-4 w-4" />Read the 2025 water report <span class="text-white/60">(PDF)</span></a>
 
-        {/* TODO: destination pending — /water-quality */}
-        <a
-          href="#past-reports"
-          class="inline-flex items-center gap-2 rounded-acw border border-acw-green/40 px-5 py-3 text-[15px] font-medium text-acw-deep transition-colors hover:border-acw-green hover:bg-white"
-        >
+        {/* TODO: no archive page yet — only the 2025 CCR is on hand. Prior years available from TCEQ under PWS 1690023. */}
+        <span class="inline-flex items-center gap-2 rounded-acw border border-acw-rule px-5 py-3 text-[15px] font-medium text-acw-muted">
           Past reports
-          <Flag kind="pending" />
-        </a>
+          <Flag kind="pending" note="Awaiting prior years' CCRs" />
+        </span>
       </div>
     </div>
 

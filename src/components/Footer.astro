@@ -70,7 +70,7 @@ const year = new Date().getFullYear();
           {
             quickLinks.map((link) => (
               <li>
-                <a href={link.href} class="text-[15px] hover:text-white">
+                <a href={link.href} target={link.newTab ? '_blank' : undefined} rel={link.newTab ? 'noopener' : undefined} class="text-[15px] hover:text-white">
                   {link.label}
                 </a>
               </li>

@@ -7,7 +7,7 @@
 
 export const nav = [
   { label: 'Notices',       href: '/notices'        },
-  { label: 'Water quality', href: '#water-quality'  },
+  { label: 'Water quality', href: '/#water-quality'  },
   { label: 'Contact',       href: '/#contact'       },
 ];
 
@@ -47,5 +47,5 @@ export const quickLinks = [
   { label: 'Start service',      href: '/start-service' },
   { label: 'Bank draft',         href: '/bank-draft' },
   { label: 'Service area',       href: '#service-area'  /* TODO */ },
-  { label: 'Consumer Confidence Report', href: '/reports/ccr-2025.pdf' },
+  { label: 'Consumer Confidence Report', href: '/reports/ccr-2025.pdf', newTab: true },
 ];
