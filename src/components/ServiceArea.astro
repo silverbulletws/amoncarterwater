@@ -1,0 +1,65 @@
+---
+import Icon from './Icon.astro';
+import Flag from './Flag.astro';
+import { contact } from '../data/nav.js';
+import { areaNotes, notServed } from '../data/service-area.js';
+import { identifiers } from '../data/nav.js';
+---
+
+<section aria-labelledby="service-area" class="border-b border-acw-rule bg-white">
+  <div class="mx-auto max-w-[1240px] px-5 py-16 sm:px-8 sm:py-20">
+    <h2 id="service-area" class="font-heading text-[26px] font-medium text-acw-deep">
+      Our service area
+    </h2>
+    <p class="mt-2 max-w-[42rem] text-[16px] leading-relaxed text-acw-muted">
+      We serve members inside our certificated area, CCN {identifiers.ccn}, granted by the Public
+      Utility Commission of Texas.
+    </p>
+
+    <div class="mt-10 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
+      <figure class="overflow-hidden rounded-acw-lg border border-acw-rule">
+        <img
+          src="/images/service-area-map.webp"
+          alt="Map of the Amon Carter Lake Water Supply Corporation certificated service area, CCN 12793, covering the south and east sides of Lake Amon G. Carter."
+          width="1600"
+          height="1400"
+          loading="lazy"
+          decoding="async"
+          class="w-full"
+        />
+        <figcaption class="border-t border-acw-rule bg-acw-tint/30 px-5 py-3 text-[13px] leading-relaxed text-acw-muted">
+          This map is a guide only and does not show property lines. If your property is near the
+          boundary, call the office to confirm before you plan anything.
+          <Flag kind="verify" note="Map redrawn from the corporation's marked-up copy — confirm before launch" />
+        </figcaption>
+      </figure>
+
+      <div class="self-center">
+        <h3 class="caps text-[11px] text-acw-green">What the area covers</h3>
+        <div class="mt-4 space-y-3 text-[16px] leading-relaxed text-acw-ink">
+          {areaNotes.map((note) => <p>{note}</p>)}
+        </div>
+
+        <h3 class="caps mt-8 text-[11px] text-acw-green">What we do not serve</h3>
+        <ul class="mt-4 space-y-2 text-[16px] text-acw-ink">
+          {
+            notServed.map((item) => (
+              <li class="flex gap-2.5">
+                <span class="mt-2.5 block h-1 w-1 shrink-0 rounded-full bg-acw-muted" />
+                {item}
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="mt-8 rounded-acw border border-acw-rule bg-acw-tint/40 p-5">
+          <p class="text-[15px] leading-relaxed text-acw-ink">
+            Not sure whether you are inside the area? Call the office at
+            <a href={contact.office.tel} class="font-medium text-acw-green hover:underline">{contact.office.display}</a>
+            and we will check for you.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

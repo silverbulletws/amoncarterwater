@@ -24,15 +24,7 @@ import Flag from './Flag.astro';
       </p>
 
       <div class="mt-8 flex flex-wrap gap-3">
-        {/* TODO: destination pending — the 2025 CCR PDF */}
-        <a
-          href="#ccr"
-          class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90"
-        >
-          <Icon name="file" class="h-4 w-4" />
-          Read the 2025 water report
-          <Flag kind="pending" />
-        </a>
+        <a href="/reports/ccr-2025.pdf" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90"><Icon name="file" class="h-4 w-4" />Read the 2025 water report <span class="text-white/60">(PDF)</span></a>
 
         {/* TODO: destination pending — /water-quality */}
         <a
@@ -61,7 +53,7 @@ import Flag from './Flag.astro';
       <div class="bg-white p-6">
         <dt class="caps text-[11px] text-acw-muted">Latest report</dt>
         <dd class="mt-2 font-heading text-[22px] font-medium text-acw-deep">
-          2025 <Flag kind="pending" />
+          2025 
         </dd>
       </div>
     </dl>

@@ -47,5 +47,5 @@ export const quickLinks = [
   { label: 'Start service',      href: '/start-service' },
   { label: 'Bank draft',         href: '/bank-draft' },
   { label: 'Service area',       href: '#service-area'  /* TODO */ },
-  { label: 'Consumer Confidence Report', href: '#ccr'   /* TODO: 2025 CCR — awaiting the PDF */ },
+  { label: 'Consumer Confidence Report', href: '/reports/ccr-2025.pdf' },
 ];
