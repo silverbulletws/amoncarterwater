@@ -3,10 +3,10 @@ import Icon from './Icon.astro';
 import Flag from './Flag.astro';
 ---
 
-<section aria-labelledby="wq-heading" class="border-b border-acw-rule bg-acw-tint/40">
+<section aria-labelledby="water-quality" class="border-b border-acw-rule bg-acw-tint/40">
   <div class="mx-auto grid max-w-[1240px] gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-16">
     <div>
-      <h2 id="wq-heading" class="font-heading text-[26px] font-medium text-acw-deep">
+      <h2 id="water-quality" class="font-heading text-[26px] font-medium text-acw-deep">
         Is the water safe?
       </h2>
 
@@ -14,7 +14,6 @@ import Flag from './Flag.astro';
         Yes. Our system carries a Superior rating from the Texas Commission on
         Environmental Quality &mdash; the highest classification a public water
         system can hold in Texas.
-        <Flag kind="verify" note="Is the Superior rating still current?" />
       </p>
 
       <p class="mt-4 max-w-[34rem] text-[16px] leading-relaxed text-acw-muted">
@@ -32,15 +31,16 @@ import Flag from './Flag.astro';
         >
           <Icon name="file" class="h-4 w-4" />
           Read the 2025 water report
-          <Flag kind="pending" note="Awaiting the 2025 CCR PDF" />
+          <Flag kind="pending" />
         </a>
 
         {/* TODO: destination pending — /water-quality */}
         <a
-          href="#water-quality"
+          href="#past-reports"
           class="inline-flex items-center gap-2 rounded-acw border border-acw-green/40 px-5 py-3 text-[15px] font-medium text-acw-deep transition-colors hover:border-acw-green hover:bg-white"
         >
           Past reports
+          <Flag kind="pending" />
         </a>
       </div>
     </div>

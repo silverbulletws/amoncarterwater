@@ -1,7 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import Flag from './Flag.astro';
-import { monthly, connection, connectionTotal, otherLines, transferFee } from '../data/rates.js';
+import { monthly, connection, connectionTotal, otherLines } from '../data/rates.js';
 ---
 
 <section aria-labelledby="rates-heading" class="border-b border-acw-rule bg-white">
@@ -50,13 +50,11 @@ import { monthly, connection, connectionTotal, otherLines, transferFee } from '.
 
         <p class="mt-4 text-[14px] leading-relaxed text-acw-muted">
           Larger lines cost more: {otherLines.map((l) => `${l.label} is ${l.amount}`).join(', ')}. You are
-          responsible for the piping from the meter to the house. Transferring an existing membership to a
-          new owner is {transferFee}.
+          responsible for the piping from the meter to the house. 
         </p>
 
         <div class="mt-6 flex flex-wrap gap-3">
           <a href="/start-service" class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90">Start service<Icon name="arrow-right" class="h-4 w-4" /></a>
-          <a href="#transfer" class="inline-flex items-center gap-2 rounded-acw border border-acw-green/40 px-5 py-3 text-[15px] font-medium text-acw-deep transition-colors hover:border-acw-green hover:bg-acw-tint/40">Transfer service</a>
         </div>
       </div>
     </div>

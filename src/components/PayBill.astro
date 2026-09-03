@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+import Flag from './Flag.astro';
+import { contact } from '../data/nav.js';
+
+/**
+ * TODO: the corporation accepts checks only — no online payment, no card, no
+ * ACH beyond the mailed bank draft form. If that ever changes, this section and
+ * the bank draft page both need revisiting.
+ */
+---
+
+<section aria-labelledby="pay-your-bill" class="border-b border-acw-rule bg-acw-tint/40">
+  <div class="mx-auto grid max-w-[1240px] gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-2 lg:gap-16">
+    <div class="self-center">
+      <h2 id="pay-your-bill" class="font-heading text-[26px] font-medium text-acw-deep">
+        How to pay your bill
+      </h2>
+
+      <p class="mt-4 max-w-[34rem] text-[17px] leading-relaxed text-acw-ink">
+        We accept checks. Bills go out monthly, and you can either mail your payment or drop it off
+        at the office.
+      </p>
+
+      <p class="mt-4 max-w-[34rem] text-[16px] leading-relaxed text-acw-muted">
+        If you would rather not write a check every month, you can set up a bank draft and we will
+        take the payment automatically. Drafts are processed around the 10th, and you still get your
+        bill beforehand so you always know the amount.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/bank-draft" class="inline-flex items-center gap-2 rounded-acw bg-acw-deep px-5 py-3 text-[15px] font-medium text-white transition-opacity hover:opacity-90">Set up bank draft<Icon name="arrow-right" class="h-4 w-4" /></a>
+        <a href={contact.office.tel} class="inline-flex items-center gap-2 rounded-acw border border-acw-green/40 px-5 py-3 text-[15px] font-medium text-acw-deep transition-colors hover:border-acw-green hover:bg-acw-tint/40">Questions about a bill</a>
+      </div>
+    </div>
+
+    <div class="grid gap-px self-center overflow-hidden rounded-acw-lg border border-acw-rule bg-acw-rule">
+      <div class="flex gap-4 bg-white p-6">
+        <Icon name="inbox" class="mt-0.5 h-5 w-5 shrink-0 text-acw-green" />
+        <div>
+          <p class="caps text-[11px] text-acw-muted">By mail</p>
+          <address class="mt-2 text-[16px] leading-relaxed text-acw-deep not-italic">
+            {contact.mail.map((line) => <span class="block">{line}</span>)}
+          </address>
+        </div>
+      </div>
+
+      <div class="flex gap-4 bg-white p-6">
+        <Icon name="map-pin" class="mt-0.5 h-5 w-5 shrink-0 text-acw-green" />
+        <div>
+          <p class="caps text-[11px] text-acw-muted">In person</p>
+          <address class="mt-2 text-[16px] leading-relaxed text-acw-deep not-italic">
+            {contact.office_address.map((line) => <span class="block">{line}</span>)}
+          </address>
+          <p class="mt-2 text-[14px] text-acw-muted">
+            Drop box available any time. The office is open 9–11 AM, Tuesday through Thursday.
+          </p>
+        </div>
+      </div>
+
+      <div class="flex gap-4 bg-white p-6">
+        <Icon name="file" class="mt-0.5 h-5 w-5 shrink-0 text-acw-green" />
+        <div>
+          <p class="caps text-[11px] text-acw-muted">Automatically</p>
+          <p class="mt-2 text-[16px] leading-relaxed text-acw-deep">
+            Monthly bank draft, taken around the 10th
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

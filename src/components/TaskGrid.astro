@@ -11,6 +11,13 @@ import Icon from './Icon.astro';
  */
 const tasks = [
   {
+    icon: 'map',
+    label: 'Service area',
+    // TODO: service area map — coveragemap.jpg to be recovered.
+    description: 'See what our certificated area covers, and how to request service.',
+    href: '#service-area',
+  },
+  {
     icon: 'credit-card',
     label: 'Pay your bill',
     description: 'View your balance, pay online, or set up a monthly bank draft.',
@@ -21,13 +28,6 @@ const tasks = [
     label: 'Transfer service',
     description: 'Moving in or selling the property? A $25 administrative fee applies.',
     href: '#transfer',
-  },
-  {
-    icon: 'map',
-    label: 'Service area',
-    // TODO: service area map — coveragemap.jpg to be recovered.
-    description: 'See what our certificated area covers, and how to request service.',
-    href: '#service-area',
   },
 ] as const;
 ---
