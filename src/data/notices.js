@@ -1,30 +1,21 @@
 /**
  * Recent notices, newest first.
- *
- * TODO: convert to an Astro content collection (src/content/notices/*.md) so
- * notices can be authored as markdown with frontmatter instead of edited as
- * JavaScript strings. Worth doing before anyone writes a long incident log —
- * see the March 2025 boil water updates on the old site for what those look
- * like. Deferred for now because notices may end up coming from KV once the
- * technician's status tool exists.
- *
- * TODO: all copy below is invented for the demo except the chloramine notice,
- * which is adapted from the corporation's own 2019 wording.
  */
 export const notices = [
   {
-    slug: 'hydrant-flushing-east-side',
-    date: '2026-08-14',
-    kind: 'Maintenance',
-    title: 'Hydrant flushing on the east side of the lake',
+    slug: 'new-website',
+    date: '2026-09-03',
+    kind: 'General',
+    title: 'A new website for Amon Carter Lake Water Supply',
     summary:
-      'Crews will be flushing hydrants Tuesday and Wednesday. You may notice discolored water for a short time afterward. Run a cold tap for a few minutes and it should clear.',
+      'Our website has been rebuilt from the ground up. You can now check the water status, look up rates, see the service area, and start service or set up bank draft online.',
     body: [
-      'Crews will be flushing hydrants on the east side of the lake Tuesday and Wednesday. Flushing clears sediment out of the lines and lets us check that hydrants are working the way they should.',
-      'You may notice discolored water for a short time afterward. It is not harmful. Run a cold tap for a few minutes and it should clear up. Hold off on washing light-colored laundry until it does.',
-      'If your water is still discolored after a few hours, give us a call.',
+      'Our website has been rebuilt. The old one had been offline, and we wanted to replace it with something that answers the questions members actually call about.',
+      'At the top of every page you will find the current system status. When everything is running normally it says so. If there is a boil water notice, an outage, or a conservation advisory, it will say that instead, and we will post updates here as we get them.',
+      'You can also look up rates and fees, read the latest water quality report, check whether a property falls inside our service area, and fill out an application for service or a bank draft form without printing anything.',
+      'If you spot something wrong on the site, or you cannot find what you came for, call the office and let us know.',
     ],
-    flag: 'demo',
+    flag: '',
   },
   {
     slug: 'ccr-2025-available',
@@ -37,7 +28,8 @@ export const notices = [
       'Every community public water system in the country is required to publish an annual report on drinking water quality. Ours is now available.',
       'The report covers where your water comes from, what we tested for over the past year, what was found, and how those levels compare to the limits set by the state and the EPA.',
     ],
-    flag: 'demo',
+    link: { href: '/reports/ccr-2025.pdf', label: 'Read the 2025 report (PDF)', newTab: true },
+    flag: '',
   },
   {
     slug: 'chloramines-to-free-chlorine',
@@ -51,6 +43,6 @@ export const notices = [
       'There may be a bit of an odor, and perhaps even a tinge of a taste to the water. This could take about a month to progress through our system.',
       'As a reminder, it indicates nothing wrong with the water. It is just a change in treatment.',
     ],
-    flag: 'verify',
+    flag: '',
   },
 ];

@@ -5,6 +5,7 @@ import StatusBar from '../components/StatusBar.astro';
 import Footer from '../components/Footer.astro';
 import Flag from '../components/Flag.astro';
 import { notices } from '../data/notices.js';
+import Icon from '../components/Icon.astro';
 
 const fmt = (iso) =>
   new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago' })
@@ -44,6 +45,9 @@ const fmt = (iso) =>
               <div class="mt-3 space-y-3 text-[16px] leading-relaxed text-acw-ink">
                 {notice.body.map((para) => <p>{para}</p>)}
               </div>
+              {notice.link && (
+                <a href={notice.link.href} target={notice.link.newTab ? '_blank' : undefined} rel={notice.link.newTab ? 'noopener' : undefined} class="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-acw-green hover:underline">{notice.link.label}<Icon name="arrow-right" class="h-4 w-4" /></a>
+              )}
             </li>
           ))
         }

@@ -6,5 +6,5 @@
  */
 export default {
   level: 'normal',
-  updated: '2026-08-27T09:00:00-05:00',
+  updated: '2026-09-03T17:00:00-05:00',
 };
