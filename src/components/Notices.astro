@@ -25,9 +25,7 @@ const fmt = (iso) =>
           Outages, water quality updates, and anything else members need to know.
         </p>
       </div>
-
-      {/* TODO: destination pending — /notices */}
-      
+     
       <a href="/notices" class="inline-flex items-center gap-1.5 text-[15px] font-medium text-acw-green hover:underline">
         All notices
         <Icon name="arrow-right" class="h-4 w-4" />
@@ -38,7 +36,6 @@ const fmt = (iso) =>
       {
         recent.map((notice) => (
           <li>
-            {/* TODO: destination pending — /notices/[slug] */}
               <a href="/notices" class="group block px-7 py-7">
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <time datetime={notice.date} class="text-[13px] text-acw-muted">
