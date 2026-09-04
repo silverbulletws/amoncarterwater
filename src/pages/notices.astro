@@ -32,7 +32,7 @@ const fmt = (iso) =>
       <ul class="space-y-10">
         {
           notices.map((notice) => (
-            <li class="border-b border-acw-rule pb-10 last:border-0">
+           <li id={notice.slug} class="scroll-mt-28 border-b border-acw-rule pb-10 last:border-0">
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <time datetime={notice.date} class="text-[13px] text-acw-muted">{fmt(notice.date)}</time>
                 <span class="text-acw-rule">&middot;</span>

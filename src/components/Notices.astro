@@ -36,7 +36,7 @@ const fmt = (iso) =>
       {
         recent.map((notice) => (
           <li>
-              <a href="/notices" class="group block px-7 py-7">
+              <a href={`/notices#${notice.slug}`} class="group block px-7 py-7">
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
                 <time datetime={notice.date} class="text-[13px] text-acw-muted">
                   {fmt(notice.date)}
