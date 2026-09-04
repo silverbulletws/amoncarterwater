@@ -47,5 +47,7 @@ export const quickLinks = [
   { label: 'Start service',      href: '/start-service' },
   { label: 'Bank draft',         href: '/bank-draft' },
   { label: 'Service area',       href: '#service-area'  /* TODO */ },
+  { label: 'Drought Contingency Plan', href: '/reports/droughtcontingency2019Bowie.pdf', newTab: true },
   { label: 'Consumer Confidence Report', href: '/reports/ccr-2025.pdf', newTab: true },
+  
 ];
