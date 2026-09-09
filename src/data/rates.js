@@ -13,9 +13,9 @@
  * inspections by the corporation's inspector before service begins.
  */
 export const monthly = {
-  minimum: '$32.00',
+  minimum: '$65.00',
   includes: '2,000 gallons',
-  overage: '$4.50',
+  overage: '$7.50',
   overageUnit: 'per 1,000 gallons after that',
 };
 

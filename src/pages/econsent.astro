@@ -1,0 +1,99 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import StatusBar from '../components/StatusBar.astro';
+import Footer from '../components/Footer.astro';
+import Flag from '../components/Flag.astro';
+import { contact } from '../data/nav.js';
+
+/**
+ * TODO: for review by the corporation's attorney before go-live. The ESIGN Act
+ * requires specific disclosures before a consumer consents to transact
+ * electronically. The wording below is a reasonable draft, not legal advice.
+ */
+const h2 = 'mt-10 font-heading text-[20px] font-medium text-acw-deep';
+const p = 'mt-3 text-[16px] leading-relaxed text-acw-ink';
+---
+
+<Layout title="Electronic communications disclosure">
+  <StatusBar placement="band" />
+  <Header />
+  <StatusBar placement="strip" />
+
+  <main id="main">
+    <div class="mx-auto max-w-[760px] px-5 py-14 sm:px-8 sm:py-20">
+      <h1 class="font-heading text-[32px] leading-tight font-medium text-acw-deep">
+        Electronic communications disclosure
+        <Flag kind="draft" note="Draft wording — for attorney review before launch" />
+      </h1>
+      <p class="mt-3 text-[17px] leading-relaxed text-acw-muted">
+        Please read this before signing anything on our website. It explains what you are agreeing to
+        when you sign electronically instead of on paper.
+      </p>
+
+      <h2 class={h2}>What you are agreeing to</h2>
+      <p class={p}>
+        When you complete and sign a form on this website, you are agreeing to do business with Amon
+        Carter Lake Water Supply Corporation electronically. Your typed name is your signature. It has
+        the same legal effect as if you had signed a paper copy by hand.
+      </p>
+      <p class={p}>
+        This applies to the specific form you are signing. It does not commit you to receiving all
+        future correspondence electronically.
+      </p>
+
+      <h2 class={h2}>You can use paper instead</h2>
+      <p class={p}>
+        You are never required to sign electronically. Every form on this site is also available as a
+        printable PDF. You can print it, fill it in, sign it by hand, and mail it to us or drop it off
+        at the office. Signing on paper will not delay your application or change anything about your
+        service.
+      </p>
+
+      <h2 class={h2}>Getting a paper copy</h2>
+      <p class={p}>
+        You may request a paper copy of anything you have signed electronically. Call the business
+        office at <a href={contact.office.tel} class="font-medium text-acw-green hover:underline">{contact.office.display}</a> or write to us at {contact.mail.join(', ')}. There is no charge for this.
+        <Flag kind="verify" note="Confirm there is no fee for paper copies" />
+      </p>
+
+      <h2 class={h2}>Withdrawing your consent</h2>
+      <p class={p}>
+        You can withdraw your consent to transact electronically at any time by contacting the office.
+        Withdrawing consent does not undo anything you have already signed, and it will not affect your
+        water service.
+      </p>
+
+      <h2 class={h2}>What you need to sign electronically</h2>
+      <p class={p}>
+        To sign a form on this site you need a device with a current web browser and an internet
+        connection. To read the printable PDF versions you need software that opens PDF files, which
+        most browsers and phones already have built in.
+      </p>
+      <p class={p}>
+        We recommend printing or saving a copy of any form you sign for your own records.
+      </p>
+
+      <h2 class={h2}>Keeping your contact details current</h2>
+      <p class={p}>
+        If your email address, mailing address, or phone number changes, please let the office know so
+        we can reach you.
+      </p>
+
+      <h2 class={h2}>Records we keep</h2>
+      <p class={p}>
+        When you sign a form electronically, we keep a record of the name you typed, the date and time
+        you signed, and the contents of the form as you submitted it.
+        <Flag kind="pending" note="Depends on where submissions land — not yet decided" />
+      </p>
+
+      <h2 class={h2}>Questions</h2>
+      <p class={p}>
+        Call the business office at <a href={contact.office.tel} class="font-medium text-acw-green hover:underline">{contact.office.display}</a>,
+        or email us at <a href={`mailto:${contact.email}`} class="font-medium text-acw-green hover:underline">{contact.email}</a>.
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
