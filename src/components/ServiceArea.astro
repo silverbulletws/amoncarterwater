@@ -18,15 +18,17 @@ import { identifiers } from '../data/nav.js';
 
     <div class="mt-10 grid gap-10 lg:grid-cols-[1.2fr_1fr] lg:gap-14">
       <figure class="overflow-hidden rounded-acw-lg border border-acw-rule">
-        <img
-          src="/images/aclwsc-map-v2.webp"
-          alt="Map of the Amon Carter Lake Water Supply Corporation certificated service area, CCN 12793, covering the south and east sides of Lake Amon G. Carter."
-          width="1000"
-          height="750"
-          loading="lazy"
-          decoding="async"
-          class="w-full"
-        />
+        <button type="button" data-lightbox-open class="block w-full cursor-zoom-in">
+          <img
+            src="/images/aclwsc-map-v2.webp"
+            alt="Map of the Amon Carter Lake Water Supply Corporation certificated service area, CCN 12793, covering the south and east sides of Lake Amon G. Carter."
+            width="1000"
+            height="750"
+            loading="lazy"
+            decoding="async"
+            class="w-full"
+          />
+        </button>
         <figcaption class="border-t border-acw-rule bg-acw-tint/30 px-5 py-3 text-[13px] leading-relaxed text-acw-muted">
           This map is a guide only and does not show property lines. If your property is near the
           boundary, call the office to confirm before you plan anything.
@@ -59,4 +61,19 @@ import { identifiers } from '../data/nav.js';
       </div>
     </div>
   </div>
+  <dialog data-lightbox class="m-auto max-h-[92vh] max-w-[95vw] rounded-acw-lg bg-transparent p-0 backdrop:bg-black/80">
+    <button type="button" data-lightbox-close aria-label="Close" class="absolute top-3 right-3 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-acw-deep transition-colors hover:bg-white">
+      <Icon name="x" class="h-5 w-5" />
+    </button>
+    <img src="/images/aclwsc-map-v2.webp" alt="" class="max-h-[92vh] w-auto rounded-acw-lg" />
+  </dialog>
+
+  <script>
+    const dialog = document.querySelector('[data-lightbox]');
+    document.querySelector('[data-lightbox-open]')?.addEventListener('click', () => dialog?.showModal());
+    document.querySelector('[data-lightbox-close]')?.addEventListener('click', () => dialog?.close());
+    dialog?.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+  </script>
 </section>
