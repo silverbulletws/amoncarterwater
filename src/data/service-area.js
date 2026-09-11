@@ -14,7 +14,9 @@ export const areaNotes = [
 ];
 
 export const notServed = [
-  'Silver Lake — contact the City of Bowie',
-  'Frontier Shores',
+  'Silver Lakes — contact the City of Bowie',
   'The Selma Park area on the north side of the lake',
+  'Frontier Shores',
+  'Keys Landing',
+
 ];

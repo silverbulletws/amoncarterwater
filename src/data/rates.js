@@ -14,18 +14,18 @@
  */
 export const monthly = {
   minimum: '$65.00',
-  includes: '2,000 gallons',
-  overage: '$7.50',
-  overageUnit: 'per 1,000 gallons after that',
+  includes: '0 gallons',
+  overage: '$7.49',
+  overageUnit: 'per 1,000 gallons',
 };
 
 export const connection = [
-  { label: 'Labor and installation', amount: '$500.00' },
-  { label: 'Meter, piping, valves, license fees, inspections', amount: '$295.00' },
+  { label: 'Meter, piping, valves, labor, and installation', amount: '$2000.00' },
+  { label: 'Plumbing license permit and inspection', amount: '$300.00' },
   { label: 'Refundable deposit', amount: '$200.00', note: 'Returned when you sell or leave the property' },
 ];
 
-export const connectionTotal = '$995.00';
+export const connectionTotal = '$2500.00';
 
 export const otherLines = [
   { label: '1 inch line', amount: '$1,195.00' },

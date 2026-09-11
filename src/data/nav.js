@@ -20,7 +20,6 @@ export const contact = {
   emergency: {
     label: 'Emergency / leaks',
     display: '(940) 841-2961',
-    note: 'Technician on duty',
     tel: 'tel:9408412961',
   },
   email: 'info@amoncarterwater.org',
@@ -32,9 +31,8 @@ export const contact = {
   },
 };
 
-// NOTE: office hours are deliberately absent. The office is unstaffed; the old
-// "9–11AM Tu/We/Th" line would send members to a locked door. Do not add it
-// back without confirming someone is actually there.
+// Office is by appointment only, with a drop box available any time. The old
+// site published "9–11AM Tu/We/Th" — do not restore those hours.
 
 export const identifiers = {
   ccn: '12793',
