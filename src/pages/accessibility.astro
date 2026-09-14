@@ -1,0 +1,68 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/Header.astro';
+import StatusBar from '../components/StatusBar.astro';
+import Footer from '../components/Footer.astro';
+import { contact } from '../data/nav.js';
+
+const p = 'mt-4 text-[16px] leading-relaxed text-acw-ink';
+---
+
+<Layout title="Accessibility statement">
+  <StatusBar placement="band" />
+  <Header />
+  <StatusBar placement="strip" />
+
+  <main id="main">
+    <div class="border-b border-acw-rule bg-acw-tint/40">
+      <div class="mx-auto max-w-[760px] px-5 py-14 sm:px-8 sm:py-16">
+        <p class="caps text-[11px] text-acw-green">ADA accessibility statement</p>
+        <h1 class="mt-3 font-heading text-[32px] leading-tight font-medium text-acw-deep">
+          Committed to an inclusive digital experience
+        </h1>
+        <p class="mt-3 text-[17px] leading-relaxed text-acw-muted">
+          Accessibility is a priority, not an option.
+        </p>
+      </div>
+    </div>
+
+    <div class="mx-auto max-w-[760px] px-5 py-14 sm:px-8 sm:py-16">
+      <p class={p}>
+        We believe the internet should be usable by everyone, regardless of ability or circumstance.
+        Amon Carter Lake Water Supply Corporation is committed to making this website work for the
+        broadest possible audience.
+      </p>
+
+      <p class={p}>
+        To support that commitment, we aim to follow the Web Content Accessibility Guidelines (WCAG)
+        2.1, Level AA. These internationally recognized guidelines set out best practices for making
+        digital content usable by people with a wide range of disabilities.
+      </p>
+
+      <p class={p}>
+        We aim to support a broad range of browsers and assistive technologies, so members can use the
+        tools that work best for them.
+      </p>
+
+      <p class={p}>
+        Accessibility is an ongoing process. Some areas of this site may not yet be fully optimized,
+        and we are actively working toward full compliance.
+      </p>
+
+      <h2 class="mt-10 font-heading text-[20px] font-medium text-acw-deep">
+        Tell us if something isn't working
+      </h2>
+
+      <p class={p}>
+        If you run into an accessibility problem on this site, or have a suggestion, we want to hear
+        about it. Email
+        <a href={`mailto:${contact.email}`} class="font-medium text-acw-green hover:underline">{contact.email}</a>
+        or call the office at
+        <a href={contact.office.tel} class="font-medium text-acw-green hover:underline">{contact.office.display}</a>,
+        and we will get you the information you need another way.
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
