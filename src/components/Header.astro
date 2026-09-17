@@ -5,22 +5,28 @@ import { nav, contact } from '../data/nav.js';
 // Collapse point is xl (1280px), not lg. On the White's Magneto build tablets
 // were landing on the desktop layout and the nav crowded the wordmark; this
 // nav is one item longer, so it collapses at the same width.
+//
+// Mobile overflow: the wordmark, the Report a Problem button and the hamburger
+// were all shrink-0 with a gap-6 between them, which came to ~514px on a 411px
+// screen and pushed the whole page sideways. The gap is now tighter below sm,
+// the wordmark can shrink and truncate, and the button uses a shorter label on
+// small screens.
 ---
 
 <header class="sticky top-[var(--band-h,0px)] z-50 border-b border-acw-rule bg-white">
-  <div class="mx-auto flex max-w-[1240px] items-center gap-6 px-5 py-3.5 sm:px-8">
+  <div class="mx-auto flex max-w-[1240px] items-center gap-3 px-5 py-3.5 sm:gap-6 sm:px-8">
     <!-- Mark + wordmark -->
-    <a href="/" class="flex shrink-0 items-center gap-3 text-acw-deep">
+    <a href="/" class="flex min-w-0 items-center gap-3 text-acw-deep">
       <span
-        class="flex h-10 w-10 items-center justify-center rounded-acw-lg bg-acw-green text-acw-tint"
+        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-acw-lg bg-acw-green text-acw-tint"
       >
         <Icon name="droplet" class="h-5 w-5" />
       </span>
-      <span class="flex flex-col leading-none">
-        <span class="font-heading text-[17px] font-medium tracking-[-0.01em] text-acw-deep">
+      <span class="flex min-w-0 flex-col leading-none">
+        <span class="truncate font-heading text-[17px] font-medium tracking-[-0.01em] text-acw-deep">
           Amon Carter Lake
         </span>
-        <span class="caps mt-1 text-[9.5px] text-acw-muted">
+        <span class="caps mt-1 truncate text-[9.5px] text-acw-muted">
           Water Supply Corporation
         </span>
       </span>
@@ -34,10 +40,8 @@ import { nav, contact } from '../data/nav.js';
         {
           nav.map((item) => (
             <li>
-              <a
-                href={item.href}
-                class="text-[15px] text-acw-ink transition-colors hover:text-acw-green"
-              >
+              
+              <a href={item.href} class="text-[15px] text-acw-ink transition-colors hover:text-acw-green" >
                 {item.label}
               </a>
             </li>
@@ -47,11 +51,9 @@ import { nav, contact } from '../data/nav.js';
     </nav>
 
     <!-- Report a problem never collapses into the menu, at any width. -->
-    <a
-      href={contact.emergency.tel}
-      class="shrink-0 rounded-acw bg-acw-alert px-4 py-2.5 caps text-[10px] font-semibold text-white transition-opacity hover:opacity-90 sm:px-5"
-    >
-      Report a Problem
+    <a href={contact.emergency.tel} class="shrink-0 rounded-acw bg-acw-alert px-3 py-2.5 caps text-[10px] font-semibold text-white transition-opacity hover:opacity-90 sm:px-5" >
+      <span class="sm:hidden">Report</span>
+      <span class="hidden sm:inline">Report a Problem</span>
     </a>
 
     <!-- Hamburger, below xl only -->
