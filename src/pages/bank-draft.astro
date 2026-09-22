@@ -5,6 +5,7 @@ import StatusBar from '../components/StatusBar.astro';
 import Footer from '../components/Footer.astro';
 import SignaturePad from '../components/SignaturePad.astro';
 import Flag from '../components/Flag.astro';
+import FormGuard from '../components/FormGuard.astro';
 import { contact } from '../data/nav.js';
 
 const field = 'w-full rounded-acw border border-acw-rule bg-white px-4 py-3 text-[16px] text-acw-ink outline-none focus:border-acw-green';
@@ -24,14 +25,24 @@ const label = 'block text-[14px] font-medium text-acw-deep';
         month, and you will still receive your bill beforehand so you always know the amount.
       </p>
 
-      <form class="mt-10 space-y-8" novalidate>
+      {/* Field names double as labels in the office's notification email —
+          see src/data/forms.js before renaming any of them. `name`, `email` and
+          `phone` are the handler's own columns; everything else is a labelled
+          row. */}
+      <form
+        class="mt-10 space-y-8"
+        novalidate
+        data-form
+        data-form-name="Bank draft application"
+        data-subject="Bank draft application — Amon Carter Lake WSC"
+      >
         <fieldset class="rounded-acw-lg border border-acw-rule bg-white p-7">
           <legend class="caps px-2 text-[11px] text-acw-green">Your account</legend>
 
           <div class="mt-4 grid gap-5 sm:grid-cols-2">
             <div>
               <label for="account" class={label}>ACLWSC account number</label>
-              <input type="text" id="account" name="account" required inputmode="numeric" class={`mt-2 ${field}`} />
+              <input type="text" id="account" name="account-number" required inputmode="numeric" class={`mt-2 ${field}`} />
               <p class="mt-1.5 text-[13px] text-acw-muted">Printed at the top of your bill.</p>
             </div>
             <div>
@@ -46,27 +57,33 @@ const label = 'block text-[14px] font-medium text-acw-deep';
           </div>
 
           <div class="mt-5">
+            <label for="email" class={label}>Email address</label>
+            <input type="email" id="email" name="email" required autocomplete="email" class={`mt-2 ${field}`} />
+            <p class="mt-1.5 text-[13px] text-acw-muted">We send your confirmation here. Your bill still arrives as it does now.</p>
+          </div>
+
+          <div class="mt-5">
             <label for="street" class={label}>Service address</label>
-            <input type="text" id="street" name="street" required autocomplete="address-line1" placeholder="Street address" class={`mt-2 ${field}`} />
+            <input type="text" id="street" name="service-address" required autocomplete="address-line1" placeholder="Street address" class={`mt-2 ${field}`} />
           </div>
 
           <div class="mt-4 grid gap-4 sm:grid-cols-[1fr_140px_160px]">
             <div>
               <label for="city" class={label}>City</label>
-              <input type="text" id="city" name="city" required autocomplete="address-level2" value="Bowie" class={`mt-2 ${field}`} />
+              <input type="text" id="city" name="service-city" required autocomplete="address-level2" value="Bowie" class={`mt-2 ${field}`} />
             </div>
             <div>
               <label for="state" class={label}>State</label>
-              <input type="text" id="state" name="state" required autocomplete="address-level1" value="TX" maxlength="2" class={`mt-2 ${field}`} />
+              <input type="text" id="state" name="service-state" required autocomplete="address-level1" value="TX" maxlength="2" class={`mt-2 ${field}`} />
             </div>
             <div>
               <label for="zip" class={label}>ZIP</label>
-              <input type="text" id="zip" name="zip" required autocomplete="postal-code" inputmode="numeric" value="76230" class={`mt-2 ${field}`} />
+              <input type="text" id="zip" name="service-zip" required autocomplete="postal-code" inputmode="numeric" value="76230" class={`mt-2 ${field}`} />
             </div>
           </div>
 
           <label class="mt-5 flex gap-3 text-[15px] text-acw-ink">
-            <input type="checkbox" id="diff-billing" name="different_billing" data-toggle-billing class="mt-0.5 h-4 w-4 shrink-0 accent-[#0F6E56]" />
+            <input type="checkbox" id="diff-billing" name="separate-billing-address" value="Yes" data-toggle-billing class="mt-0.5 h-4 w-4 shrink-0 accent-[#0F6E56]" />
             <span>My bill goes to a different address</span>
           </label>
 
@@ -75,21 +92,21 @@ const label = 'block text-[14px] font-medium text-acw-deep';
 
             <div class="mt-4">
               <label for="bill-street" class={label}>Street address</label>
-              <input type="text" id="bill-street" name="bill_street" class={`mt-2 ${field}`} />
+              <input type="text" id="bill-street" name="billing-address" autocomplete="billing address-line1" class={`mt-2 ${field}`} />
             </div>
 
             <div class="mt-4 grid gap-4 sm:grid-cols-[1fr_140px_160px]">
               <div>
                 <label for="bill-city" class={label}>City</label>
-                <input type="text" id="bill-city" name="bill_city" class={`mt-2 ${field}`} />
+                <input type="text" id="bill-city" name="billing-city" autocomplete="billing address-level2" class={`mt-2 ${field}`} />
               </div>
               <div>
                 <label for="bill-state" class={label}>State</label>
-                <input type="text" id="bill-state" name="bill_state" maxlength="2" class={`mt-2 ${field}`} />
+                <input type="text" id="bill-state" name="billing-state" autocomplete="billing address-level1" maxlength="2" class={`mt-2 ${field}`} />
               </div>
               <div>
                 <label for="bill-zip" class={label}>ZIP</label>
-                <input type="text" id="bill-zip" name="bill_zip" inputmode="numeric" class={`mt-2 ${field}`} />
+                <input type="text" id="bill-zip" name="billing-zip" autocomplete="billing postal-code" inputmode="numeric" class={`mt-2 ${field}`} />
               </div>
             </div>
           </div>
@@ -100,7 +117,7 @@ const label = 'block text-[14px] font-medium text-acw-deep';
 
           <div class="mt-4">
             <label for="bank" class={label}>Bank name</label>
-            <input type="text" id="bank" name="bank" required class={`mt-2 ${field}`} />
+            <input type="text" id="bank" name="bank-name" required class={`mt-2 ${field}`} />
           </div>
 
           <div class="mt-5 rounded-acw border border-dashed border-acw-rule bg-acw-tint/40 p-5">
@@ -130,26 +147,30 @@ const label = 'block text-[14px] font-medium text-acw-deep';
           </div>
         </fieldset>
 
+        <FormGuard action="bank_draft" />
+
         <div class="flex flex-wrap items-center gap-4">
-          <button type="submit" class="rounded-acw bg-acw-deep px-6 py-3.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90">Submit application</button>
+          <button type="submit" class="rounded-acw bg-acw-deep px-6 py-3.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-wait disabled:opacity-60">Submit application</button>
           <a href="/forms/bank_draft_application.pdf" target="_blank" rel="noopener" class="text-[15px] text-acw-green underline">Open the printable form <span class="text-acw-muted">(PDF opens in a new tab)</span></a>
         </div>
-
-        {/* TODO: no submit handler. Needs a Worker endpoint, spam protection, and a decision on where submissions land — the office has no working inbox. */}
       </form>
     </div>
   </main>
   <Footer />
   <script>
-  const toggle = document.querySelector('[data-toggle-billing]');
-  const panel = document.querySelector('[data-billing-fields]');
-  toggle?.addEventListener('change', () => {
-    if (!panel) return;
+  const toggle = document.querySelector<HTMLInputElement>('[data-toggle-billing]');
+  const panel = document.querySelector<HTMLElement>('[data-billing-fields]');
+  const sync = () => {
+    if (!panel || !toggle) return;
     panel.hidden = !toggle.checked;
-    for (const input of panel.querySelectorAll('input')) {
+    for (const input of panel.querySelectorAll<HTMLInputElement>('input')) {
       input.required = toggle.checked;
       if (!toggle.checked) input.value = '';
     }
-  });
+  };
+  toggle?.addEventListener('change', sync);
+  // Clearing the form after a successful send doesn't fire 'change', and the
+  // fields aren't cleared until after the reset event, so resync on the tick.
+  toggle?.form?.addEventListener('reset', () => setTimeout(sync));
 </script>
 </Layout>

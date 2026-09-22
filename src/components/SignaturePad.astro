@@ -29,7 +29,10 @@ const { name, label = 'Signature' } = Astro.props;
   </div>
 
   <label class="mt-4 flex gap-3 text-[14px] leading-relaxed text-acw-ink">
-    <input type="checkbox" name={`${name}_consent`} required class="mt-1 h-4 w-4 shrink-0 accent-[#0F6E56]" />
+    {/* An unchecked box is simply absent from the payload; a checked one would
+        otherwise submit the browser default "on", which reads badly in the
+        office's email. */}
+    <input type="checkbox" name={`${name}-consent`} value="Yes" required class="mt-1 h-4 w-4 shrink-0 accent-[#0F6E56]" />
     <span>I agree to sign this document electronically, and I understand my typed name has the same legal effect as a handwritten signature.*</span>
   </label>
 
@@ -40,16 +43,16 @@ const { name, label = 'Signature' } = Astro.props;
     </p>
   </div>
 
-  <input type="hidden" name={`${name}_signed_at`} data-sig-time />
+  <input type="hidden" name={`${name}-signed-at`} data-sig-time />
 </div>
 
 <script>
   const CURSIVE = "'Dancing Script', cursive";
-  for (const input of document.querySelectorAll('[data-sig-input]')) {
+  for (const input of document.querySelectorAll<HTMLInputElement>('[data-sig-input]')) {
     const box = input.closest('div');
-    const preview = box?.querySelector('[data-sig-preview]');
-    const stamp = box?.querySelector('[data-sig-time]');
-    input.addEventListener('input', () => {
+    const preview = box?.querySelector<HTMLElement>('[data-sig-preview]');
+    const stamp = box?.querySelector<HTMLInputElement>('[data-sig-time]');
+    const sync = () => {
       const value = input.value.trim();
       if (!preview) return;
       if (value) {
@@ -60,6 +63,10 @@ const { name, label = 'Signature' } = Astro.props;
         preview.innerHTML = '<span class="text-[15px] text-acw-muted">Your signature will appear here</span>';
         if (stamp) stamp.value = '';
       }
-    });
+    };
+    input.addEventListener('input', sync);
+    // Clearing the form after a successful send doesn't fire 'input', and the
+    // fields aren't cleared until after the reset event, so resync on the tick.
+    input.form?.addEventListener('reset', () => setTimeout(sync));
   }
 </script>

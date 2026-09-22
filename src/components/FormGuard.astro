@@ -1,0 +1,209 @@
+---
+/**
+ * Spam protection and submit handling for the application forms.
+ *
+ * Drop this in just above a form's submit button and give the <form> itself
+ * `data-form`, `data-form-name` and (optionally) `data-subject`. It renders:
+ *
+ *   - a honeypot field, off-screen and hidden from assistive technology, that
+ *     only a bot will fill in;
+ *   - a Cloudflare Turnstile widget, rendered explicitly so each form owns its
+ *     own widget and can reset it between attempts;
+ *   - a live region for the result, so a screen reader hears it.
+ *
+ * The script below serialises the form to JSON and posts it to the Worker.
+ * Both layers are checked again server-side — the client copy is there to save
+ * a round trip and to give people a sensible message, not to be the defence.
+ *
+ * Field naming matters: anything that isn't name / email / phone / message
+ * becomes a labelled row in the office's notification email, keyed on the
+ * field's `name`. See src/data/forms.js.
+ */
+import { FORMS } from '../data/forms.js';
+
+interface Props {
+  /** Turnstile action, 1-32 chars of [A-Za-z0-9_-]. Distinguishes the forms in Cloudflare's analytics. */
+  action: string;
+}
+const { action } = Astro.props;
+const uid = `guard-${action}`;
+---
+
+<div class="space-y-5">
+  {/* Honeypot. Positioned off-screen rather than display:none — some bots skip
+      anything they can see is hidden. aria-hidden + tabindex keep it away from
+      anyone filling the form in with a keyboard or a screen reader. */}
+  <div class="absolute -left-[9999px] h-px w-px overflow-hidden" aria-hidden="true">
+    <label for={`${uid}-${FORMS.honeypotField}`}>Website</label>
+    <input
+      type="text"
+      id={`${uid}-${FORMS.honeypotField}`}
+      name={FORMS.honeypotField}
+      tabindex="-1"
+      autocomplete="off"
+    />
+  </div>
+
+  <div
+    class="cf-turnstile"
+    data-sitekey={FORMS.turnstileSiteKey}
+    data-turnstile-action={action}
+  ></div>
+  <noscript>
+    <p class="text-[14px] leading-relaxed text-acw-muted">
+      This form needs JavaScript to complete its security check. Please use the
+      printable PDF below, or call the business office.
+    </p>
+  </noscript>
+
+  <p
+    class="hidden rounded-acw px-4 py-3 text-[15px] leading-relaxed"
+    role="status"
+    aria-live="polite"
+    data-form-status
+  ></p>
+</div>
+
+<script>
+  // Astro bundles this script, so it can import the config directly rather
+  // than threading the endpoint through a data attribute.
+  import { FORMS } from '../data/forms.js';
+
+  declare global {
+    interface Window {
+      turnstile?: {
+        render: (el: Element, opts: Record<string, unknown>) => string | undefined;
+        reset: (widgetId?: string) => void;
+      };
+      acwTurnstileReady?: () => void;
+    }
+  }
+
+  // One widget per form, kept by ID so a form only ever resets its own.
+  const widgetIds = new WeakMap<HTMLFormElement, string>();
+
+  window.acwTurnstileReady = () => {
+    document.querySelectorAll<HTMLElement>('.cf-turnstile').forEach((el) => {
+      const form = el.closest<HTMLFormElement>('form');
+      if (!form || widgetIds.has(form)) return;
+      const id = window.turnstile?.render(el, {
+        sitekey: el.dataset.sitekey,
+        action: el.dataset.turnstileAction,
+        // The standard widget is a fixed 300px wide; fall back to the compact
+        // one where the form is narrower than that.
+        size: form.clientWidth < 300 ? 'compact' : 'normal',
+      });
+      if (id) widgetIds.set(form, id);
+    });
+  };
+
+  // Load Turnstile once per page, however many forms are on it.
+  if (document.querySelector('.cf-turnstile') && !document.querySelector('script[data-turnstile]')) {
+    const s = document.createElement('script');
+    s.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=acwTurnstileReady';
+    s.async = true;
+    s.defer = true;
+    s.dataset.turnstile = '';
+    document.head.append(s);
+  }
+
+  const collect = (form: HTMLFormElement) => {
+    const data: Record<string, string> = {};
+    for (const [key, value] of new FormData(form).entries()) {
+      if (typeof value !== 'string') continue;
+      const v = value.trim();
+      // Skip blanks: an untouched optional field would otherwise become an
+      // empty labelled row in the office's email.
+      if (!v) continue;
+      // Repeated keys (checkbox groups) join into one readable value.
+      data[key] = data[key] ? `${data[key]}, ${v}` : v;
+    }
+    const token = data['cf-turnstile-response'] ?? '';
+    delete data['cf-turnstile-response'];
+    return { data, token };
+  };
+
+  const showStatus = (el: HTMLElement | null, text: string, ok: boolean) => {
+    if (!el) return;
+    el.textContent = text;
+    el.classList.remove('hidden');
+    el.classList.toggle('bg-acw-tint/60', ok);
+    el.classList.toggle('text-acw-deep', ok);
+    el.classList.toggle('bg-red-50', !ok);
+    el.classList.toggle('text-red-800', !ok);
+  };
+
+  document.querySelectorAll<HTMLFormElement>('form[data-form]').forEach((form) => {
+    const status = form.querySelector<HTMLElement>('[data-form-status]');
+    const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+    let sending = false;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (sending) return;
+
+      // The forms carry `novalidate` so the browser doesn't interrupt while
+      // people are still typing; check on submit instead.
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const { data, token } = collect(form);
+
+      // Honeypot filled: act as though it worked and send nothing. The Worker
+      // checks this too — this just saves the request.
+      if (data[FORMS.honeypotField]) {
+        showStatus(status, 'Thank you. Your application has been sent.', true);
+        form.reset();
+        return;
+      }
+      delete data[FORMS.honeypotField];
+
+      if (!token) {
+        showStatus(status, 'Please complete the security check before submitting.', false);
+        return;
+      }
+
+      const payload = {
+        form_name: form.dataset.formName,
+        subject: form.dataset.subject,
+        page_url: window.location.href,
+        ...data,
+        // Neither form has a message box, and without this the office's email
+        // would read "New form submission". Name the form instead.
+        message: data.message || form.dataset.formName,
+        'cf-turnstile-response': token,
+      };
+
+      sending = true;
+      if (submit) submit.disabled = true;
+      showStatus(status, 'Sending your application…', true);
+
+      try {
+        const res = await fetch(FORMS.endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const body = await res.json().catch(() => ({ ok: false }));
+        if (res.ok && body.ok) {
+          showStatus(status, 'Thank you. Your application has been sent, and the office will be in touch.', true);
+          // form.reset() fires a 'reset' event; the signature preview, the
+          // initials timestamps and the conditional panels resync off that.
+          form.reset();
+        } else {
+          showStatus(status, body.error || 'Sorry, something went wrong. Please try again, or call the business office.', false);
+        }
+      } catch {
+        showStatus(status, 'Sorry, we could not reach the server. Please check your connection and try again.', false);
+      } finally {
+        sending = false;
+        if (submit) submit.disabled = false;
+        // Turnstile tokens are single-use: always take a fresh one before a retry.
+        const widgetId = widgetIds.get(form);
+        if (widgetId) window.turnstile?.reset(widgetId);
+      }
+    });
+  });
+</script>
