@@ -81,6 +81,17 @@ const uid = `guard-${action}`;
 
   // One widget per form, kept by ID so a form only ever resets its own.
   const widgetIds = new WeakMap<HTMLFormElement, string>();
+  // The last error Turnstile reported for a form, so a failed challenge can say
+  // what went wrong instead of silently yielding no token.
+  const widgetErrors = new WeakMap<HTMLFormElement, string>();
+
+  // https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/
+  const TURNSTILE_HINTS: Record<string, string> = {
+    '110200': 'the domain this page is served from is not on the widget\u2019s hostname list in the Cloudflare dashboard. Add it (localhost included) or use a separate key for development.',
+    '110100': 'the site key is not valid.',
+    '110110': 'the site key is not valid for this action.',
+    '400020': 'the widget was rendered more than once into the same element.',
+  };
 
   window.acwTurnstileReady = () => {
     document.querySelectorAll<HTMLElement>('.cf-turnstile').forEach((el) => {
@@ -92,6 +103,21 @@ const uid = `guard-${action}`;
         // The standard widget is a fixed 300px wide; fall back to the compact
         // one where the form is narrower than that.
         size: form.clientWidth < 300 ? 'compact' : 'normal',
+        'error-callback': (code: string) => {
+          widgetErrors.set(form, code);
+          // The visitor gets a plain message; the code and what it means go to
+          // the console, where whoever is configuring the widget will see them.
+          console.error(
+            `Turnstile error ${code}` +
+              (TURNSTILE_HINTS[code] ? ` \u2014 ${TURNSTILE_HINTS[code]}` : '')
+          );
+          // Returning nothing lets Turnstile show its own error state too.
+        },
+        'callback': () => widgetErrors.delete(form),
+        'expired-callback': () => {
+          widgetErrors.delete(form);
+          window.turnstile?.reset(widgetIds.get(form));
+        },
       });
       if (id) widgetIds.set(form, id);
     });
@@ -161,7 +187,13 @@ const uid = `guard-${action}`;
       delete data[FORMS.honeypotField];
 
       if (!token) {
-        showStatus(status, 'Please complete the security check before submitting.', false);
+        showStatus(
+          status,
+          widgetErrors.has(form)
+            ? 'The security check could not load, so we cannot send this form. Please reload the page, or call the business office.'
+            : 'Please complete the security check before submitting.',
+          false
+        );
         return;
       }
 

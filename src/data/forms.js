@@ -19,7 +19,7 @@ export const FORMS = {
   // Worker, as the TURNSTILE_SECRET_KEY secret.
   // TODO(client): this is Cloudflare's "always passes" test key. Replace it
   // with the real site key for amoncarterwater.org before go-live.
-  turnstileSiteKey: '0x4AAAAAAFAQLCT5g6Z0NQbC',
+  turnstileSiteKey: '0x4AAAAAAEJh7Yql6Y4BoRtQ',
 
   // The hidden field bots fill in and people never see. Must match
   // HONEYPOT_FIELDS in the Worker.
