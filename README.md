@@ -24,34 +24,41 @@ npm run check    # type-check .astro files
 - **Build output directory:** `dist`
 - **Framework preset:** Astro
 
-## Changing the system status
+## Status and notices
 
-Everything the status bar shows comes from [`src/data/status.json`](src/data/status.json).
-There is no status markup anywhere else in the site, and there must not be —
-when the tool Ross uses from his truck gets built, writing that one object is
-its entire job.
+Staff post both with the SBWS post editor
+(https://app.silverbulletweb.com/sbws-post-editor/). Each post is one Markdown
+file; nothing about them is hard-coded in the pages.
 
-```json
-{
-  "level": "normal",
-  "headline": "All systems A-OK",
-  "detail": "Water is safe to drink, no advisories in effect",
-  "updated": "2026-08-21T09:14:00-05:00"
-}
+### System status
+
+One file per update in [`src/content/status/`](src/content/status/):
+
+```yaml
+headline: All systems A-OK
+detail: Water is safe to drink, no advisories in effect   # optional
+color: green                 # green, amber, blue or red
+date: 2026-09-17T09:00:00    # Bowie time, no timezone
 ```
 
-`level` is one of `normal`, `advisory`, `boil`, `outage`.
+Every page shows only the **newest** update (by `date`); older ones stay as a
+record. Everything is drawn by
+[`src/components/StatusBar.astro`](src/components/StatusBar.astro).
 
-| level | appearance | placement |
+| color | appearance | placement |
 |---|---|---|
-| `normal` | tint background, filled dot | slim strip below the header |
-| `advisory` | amber tint, warning triangle | slightly taller strip below the header |
-| `boil` | red tint, alert octagon | full-width band **above** the header |
-| `outage` | red tint, droplet-off | full-width band **above** the header |
+| `green` | pale green strip, green dot | slim strip below the header |
+| `amber` | pale amber strip, amber dot | slim strip below the header |
+| `blue` | pale blue strip, blue dot | slim strip below the header |
+| `red` | dark red band, white text, alert icon | full-width band **above** the header, stays on screen |
 
-Sample objects for all four states are in the comment at the top of
-[`src/components/StatusBar.astro`](src/components/StatusBar.astro). There is no
-editing interface yet; that is deliberately out of scope.
+### Notices
+
+One file per notice in [`src/content/notices/`](src/content/notices/): title,
+date, type, a short summary, an optional button (`linkUrl`, `linkLabel`), and
+the full text as Markdown below the frontmatter. The home page lists the
+newest three (summary only); [`/notices/`](src/pages/notices.astro) shows them
+all in full, each at `/notices/#<file name>`.
 
 ## Design tokens
 
@@ -65,7 +72,7 @@ Weights 400 and 500 only — nothing on this site is 700.
 ## Scope
 
 Homepage only: layout, header, status bar, hero, task grid, footer. Interior
-pages, forms of any kind, the status editing tool, email and anything touching
+pages, forms of any kind, email and anything touching
 bank details are all out of scope.
 
 Two standing content rules, both deliberate:

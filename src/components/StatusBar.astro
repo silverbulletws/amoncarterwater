@@ -1,156 +1,102 @@
 ---
+import { getCollection } from 'astro:content';
 import Icon from './Icon.astro';
-import status from '../data/status.js';
-import { statuses } from '../data/statuses.js';
 
 /**
- * The status bar reads entirely from src/data/status.json. There is no status
+ * The system status. It shows the newest post in the `status` collection
+ * (src/content/status/, newest by `date`) and nothing else. There is no status
  * markup anywhere else in the site, and there must not be.
  *
- * When the tool Ross uses from his truck gets built, its only job is writing
- * that one small object. Hardcoding the status here would make that a rewrite;
- * keeping it as data makes it a swap.
+ * Staff post a new status from the SBWS post editor: headline, detail, colour
+ * and date. Older posts stay in the folder as a record; only the newest shows.
  *
- * ---------------------------------------------------------------------------
- * TO PREVIEW EACH STATE: edit `level` in src/data/status.json and reload.
+ * Every page renders two slots, one on each side of the header:
  *
- *   { "level": "normal",   "headline": "All systems A-OK",
- *     "detail": "Water is safe to drink, no advisories in effect" }
+ *   <StatusBar placement="band" />
+ *   <Header />
+ *   <StatusBar placement="strip" />
  *
- *   { "level": "advisory", "headline": "Water conservation advisory",
- *     "detail": "Please limit outdoor watering until further notice" }
- *
- *   { "level": "boil",     "headline": "Boil water notice in effect",
- *     "detail": "Bring water to a rolling boil for two minutes before drinking or cooking" }
- *
- *   { "level": "outage",   "headline": "Service outage",
- *     "detail": "Crews are on site. We will post here as soon as service is restored" }
- *
- * `normal` and `advisory` render as a slim strip below the header. `boil` and
- * `outage` render as a full-width band above the header, pushing the page down.
- * No editing interface — that is deliberately out of scope.
- * ---------------------------------------------------------------------------
+ * Each shows only for the colours that belong in it. green, amber and blue
+ * are a slim strip below the header: a dot in the colour on a pale shade of
+ * it. red (boil water notices, outages) is a full-width dark red band above
+ * the header that stays on screen while scrolling.
  */
 
-type Level = 'normal' | 'advisory' | 'boil' | 'outage';
-
 interface Props {
-  /**
-   * Where this instance sits in the page. Render both in Layout/index and each
-   * one shows up only for the levels that belong in that slot, so the
-   * placement rule lives here rather than in the page.
-   */
   placement: 'strip' | 'band';
 }
 
 const { placement } = Astro.props;
 
+const posts = await getCollection('status');
+const latest = posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime())[0];
+
 // Full Tailwind class strings, written out literally — Tailwind scans source
 // text, so these must never be assembled from fragments.
 const presentation = {
-  normal: {
-    placement: 'strip',
-    surface: 'bg-acw-tint text-acw-deep',
-    rule: 'border-acw-light',
-    pad: 'py-2.5',
-    icon: null,
-    label: 'System status',
-  },
-  advisory: {
-    placement: 'strip',
-    surface: 'bg-acw-amber-tint text-acw-amber-ink',
-    rule: 'border-acw-amber-ink/20',
-    pad: 'py-3.5',
-    icon: 'alert-triangle',
-    label: 'Water advisory',
-  },
-  boil: {
-    placement: 'band',
-    surface: 'bg-acw-red-ink text-white',
-    rule: 'border-black/20',
-    pad: 'py-5',
-    icon: 'alert-octagon',
-    label: 'Boil water notice',
-  },
-  outage: {
-    placement: 'band',
-    surface: 'bg-acw-red-ink text-white',
-    rule: 'border-black/20',
-    pad: 'py-5',
-    icon: 'droplet-off',
-    label: 'Service outage',
-  },
+  green: { placement: 'strip', surface: 'bg-acw-tint text-acw-deep', rule: 'border-acw-light', dot: 'bg-acw-mid', label: 'System status' },
+  amber: { placement: 'strip', surface: 'bg-acw-amber-tint text-acw-amber-ink', rule: 'border-acw-amber-ink/20', dot: 'bg-acw-amber-dot', label: 'Water advisory' },
+  blue: { placement: 'strip', surface: 'bg-acw-blue-tint text-acw-blue-ink', rule: 'border-acw-blue-ink/20', dot: 'bg-acw-blue-dot', label: 'System status' },
+  red: { placement: 'band', surface: 'bg-acw-red-ink text-white', rule: 'border-black/20', dot: null, label: 'Urgent notice' },
 } as const;
 
-const level = status.level as Level;
-const state = presentation[level] ?? presentation.normal;
-const copy = statuses[level] ?? statuses.normal;
-
-// Only render in the slot this level belongs to.
-const active = state.placement === placement;
-
-// "Updated 21 Aug, 9:14 AM" — Bowie is US Central, so format there explicitly
-// rather than inheriting whatever timezone the build machine happens to use.
-const updatedAt = new Date(status.updated);
-const TZ = 'America/Chicago';
-
-const day = new Intl.DateTimeFormat('en-GB', {
-  day: 'numeric',
-  month: 'short',
-  timeZone: TZ,
-}).format(updatedAt);
-
-const time = new Intl.DateTimeFormat('en-US', {
-  hour: 'numeric',
-  minute: '2-digit',
-  hour12: true,
-  timeZone: TZ,
-}).format(updatedAt);
-
-const updatedAbsolute = `${day}, ${time}`;
+const state = latest ? presentation[latest.data.color] : null;
+const active = state?.placement === placement;
 const isBand = placement === 'band';
+
+/*
+ * The editor writes the date without a timezone (2026-09-17T09:00:00), meaning
+ * Bowie wall-clock time. The frontmatter parser reads such a date as UTC, so
+ * the UTC parts of the Date are exactly what was typed. Format from those
+ * rather than converting, or a 9:00 AM post would show as 4:00 AM.
+ */
+let updatedAbsolute = '';
+let updatedIso = '';
+if (latest) {
+  const d = latest.data.date;
+  const asTyped = { timeZone: 'UTC' } as const;
+  const day = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short', ...asTyped }).format(d);
+  const time = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, ...asTyped }).format(d);
+  updatedAbsolute = `${day}, ${time}`;
+  // Local (no offset) on purpose: the browser reads it in the visitor's own
+  // timezone, which for members is Central, for the "· 3 days ago" below.
+  updatedIso = d.toISOString().slice(0, 19);
+}
 ---
 
 {
-  active && (
+  latest && state && active && (
     <div
-      class:list={[
-        'w-full border-b',
-        state.surface,
-        state.rule,
-        isBand ? 'sticky top-0 z-60 border-b-2' : '',
-      ]}
+      class:list={['w-full border-b', state.surface, state.rule, isBand ? 'sticky top-0 z-60 border-b-2' : '']}
       role={isBand ? 'region' : undefined}
       aria-labelledby={isBand ? 'status-label' : undefined}
+      data-status-band={isBand ? '' : undefined}
     >
       <div
         class:list={[
           'mx-auto flex max-w-[1240px] flex-wrap items-baseline gap-x-3 gap-y-1 px-5 sm:px-8',
-          state.pad,
+          isBand ? 'py-5' : 'py-2.5',
         ]}
       >
         <span class="flex h-[1lh] shrink-0 items-center self-start text-[14px]">
-          {state.icon ? (
-            <Icon name={state.icon} class={isBand ? 'h-5 w-5' : 'h-4 w-4'} />
+          {state.dot ? (
+            <span class:list={['block h-2.5 w-2.5 rounded-full', state.dot]} />
           ) : (
-            /* normal — a filled dot, not an icon */
-            <span class="block h-2.5 w-2.5 rounded-full bg-acw-mid" />
+            <Icon name="alert-octagon" class="h-5 w-5" />
           )}
         </span>
 
         <span id="status-label" class="sr-only">{state.label}</span>
 
         <p class="caps font-heading text-[14px] font-semibold">
-          {copy.headline}
+          {latest.data.headline}
         </p>
 
-        <p class="text-[13px] opacity-90">
-          {copy.detail}
-        </p>
+        {latest.data.detail && <p class="text-[13px] opacity-90">{latest.data.detail}</p>}
 
         <p class="shrink-0 text-[13px] opacity-70">
           Updated{' '}
-          <time datetime={status.updated} data-status-updated>
+          <time datetime={updatedIso} data-status-updated>
             {updatedAbsolute}
           </time>
         </p>
@@ -177,5 +123,17 @@ const isBand = placement === 'band';
       days < 0 ? null : days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
 
     if (relative) el.insertAdjacentText('afterend', ` · ${relative}`);
+  }
+
+  /**
+   * The red band and the header are both sticky. The header sits at
+   * top: var(--band-h), so it stops just under the band rather than sliding
+   * beneath it. The band's height depends on how its text wraps, so measure it.
+   */
+  const band = document.querySelector<HTMLElement>('[data-status-band]');
+  if (band) {
+    const set = () => document.documentElement.style.setProperty('--band-h', `${band.offsetHeight}px`);
+    set();
+    new ResizeObserver(set).observe(band);
   }
 </script>

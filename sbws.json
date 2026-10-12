@@ -1,0 +1,59 @@
+{
+  "version": 1,
+  "site": { "name": "Amon Carter Lake Water Supply", "url": "https://amoncarterwater.org" },
+  "collections": [
+    {
+      "key": "status",
+      "label": "System status",
+      "singular": "Status update",
+      "folder": "src/content/status",
+      "path": "{slug}.md",
+      "body": false,
+      "slug": { "from": "sequence", "prefix": "status-" },
+      "list": { "title": "headline", "date": "date", "sort": "-date" },
+      "fields": [
+        { "name": "headline", "label": "Headline", "type": "text", "required": true,
+          "default": "All systems A-OK",
+          "help": "The bold first line at the top of every page, e.g. \"Boil water notice in effect\". Only the newest status is shown." },
+        { "name": "detail", "label": "Detail", "type": "text",
+          "default": "Water is safe to drink, no advisories in effect",
+          "help": "Optional. The line after the headline, e.g. \"Bring water to a rolling boil for two minutes before drinking or cooking\"." },
+        { "name": "color", "label": "Colour", "type": "select", "required": true, "default": "green",
+          "options": [
+            { "value": "green", "label": "Green: all normal" },
+            { "value": "amber", "label": "Amber: advisory or caution" },
+            { "value": "blue", "label": "Blue: general information" },
+            { "value": "red", "label": "Red: boil water notice or outage (big red band)" }
+          ],
+          "help": "Green, amber and blue show as a slim strip under the menu, with a dot in that colour. Red shows as a large dark red band above the menu that stays on screen; use it only for boil water notices and outages." },
+        { "name": "date", "label": "Date and time", "type": "date", "format": "datetime", "required": true,
+          "help": "Shown as \"Updated …\". Bowie time. The newest date is the one the site shows, so to post a new status, use the current date and time." }
+      ]
+    },
+    {
+      "key": "notices",
+      "label": "Notices",
+      "singular": "Notice",
+      "folder": "src/content/notices",
+      "path": "{slug}.md",
+      "url": "/notices/#{slug}",
+      "slug": { "from": "title" },
+      "list": { "title": "title", "date": "date", "sort": "-date" },
+      "images": { "store": "public", "folder": "public/images/notices" },
+      "fields": [
+        { "name": "title", "label": "Title", "type": "text", "required": true },
+        { "name": "date", "label": "Date", "type": "date", "required": true,
+          "help": "The newest three notices are shown on the home page." },
+        { "name": "kind", "label": "Type", "type": "select", "required": true, "default": "General",
+          "options": ["General", "Billing", "Water quality", "Outage"],
+          "help": "The small label above the title." },
+        { "name": "summary", "label": "Summary", "type": "textarea", "required": true,
+          "help": "One or two sentences. The home page shows this instead of the full text." },
+        { "name": "linkUrl", "label": "Button link", "type": "text",
+          "help": "Optional. Adds a button under the notice, e.g. /reports/ccr-2025.pdf or a full https:// address. PDFs and other websites open in a new tab." },
+        { "name": "linkLabel", "label": "Button text", "type": "text",
+          "help": "The words on the button, e.g. \"Read the 2025 report (PDF)\". Leave blank for \"Read more\"." }
+      ]
+    }
+  ]
+}

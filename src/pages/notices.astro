@@ -3,17 +3,21 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/Header.astro';
 import StatusBar from '../components/StatusBar.astro';
 import Footer from '../components/Footer.astro';
-import Flag from '../components/Flag.astro';
-import { notices } from '../data/notices.js';
 import Icon from '../components/Icon.astro';
+import { render } from 'astro:content';
+import { getNotices, formatNoticeDate, isoDay } from '../lib/notices';
 
-const fmt = (iso) =>
-  new Intl.DateTimeFormat('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Chicago' })
-    .format(new Date(`${iso}T12:00:00-05:00`));
+const notices = await Promise.all(
+  (await getNotices()).map(async (notice) => ({ notice, Content: (await render(notice)).Content })),
+);
+
+// Files (PDFs) and other sites open in a new tab; pages on this site do not.
+const newTab = (href: string) => /^https?:\/\//.test(href) || /\.pdf$/i.test(href);
 ---
 
 <Layout title="Notices">
   <StatusBar placement="band" />
+
   <Header />
   <StatusBar placement="strip" />
 
@@ -31,22 +35,21 @@ const fmt = (iso) =>
     <div class="mx-auto max-w-[880px] px-5 py-14 sm:px-8 sm:py-16">
       <ul class="space-y-10">
         {
-          notices.map((notice) => (
-           <li id={notice.slug} class="scroll-mt-28 border-b border-acw-rule pb-10 last:border-0">
+          notices.map(({ notice, Content }) => (
+            <li id={notice.id} class="scroll-mt-28 border-b border-acw-rule pb-10 last:border-0">
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <time datetime={notice.date} class="text-[13px] text-acw-muted">{fmt(notice.date)}</time>
+                <time datetime={isoDay(notice.data.date)} class="text-[13px] text-acw-muted">{formatNoticeDate(notice.data.date)}</time>
                 <span class="text-acw-rule">&middot;</span>
-                <span class="caps text-[11px] text-acw-green">{notice.kind}</span>
-                {notice.flag && <Flag kind={notice.flag} />}
+                <span class="caps text-[11px] text-acw-green">{notice.data.kind}</span>
               </div>
 
-              <h2 class="mt-2 font-heading text-[22px] leading-snug font-medium text-acw-deep">{notice.title}</h2>
+              <h2 class="mt-2 font-heading text-[22px] leading-snug font-medium text-acw-deep">{notice.data.title}</h2>
 
-              <div class="mt-3 space-y-3 text-[16px] leading-relaxed text-acw-ink">
-                {notice.body.map((para) => <p>{para}</p>)}
+              <div class="mt-3 space-y-3 text-[16px] leading-relaxed text-acw-ink [&_a]:text-acw-green [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-6 [&_ul]:list-disc [&_ul]:pl-6 [&_strong]:font-medium">
+                <Content />
               </div>
-              {notice.link && (
-                <a href={notice.link.href} target={notice.link.newTab ? '_blank' : undefined} rel={notice.link.newTab ? 'noopener' : undefined} class="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-acw-green hover:underline">{notice.link.label}<Icon name="arrow-right" class="h-4 w-4" /></a>
+              {notice.data.linkUrl && (
+                <a href={notice.data.linkUrl} target={newTab(notice.data.linkUrl) ? '_blank' : undefined} rel={newTab(notice.data.linkUrl) ? 'noopener' : undefined} class="mt-4 inline-flex items-center gap-2 text-[15px] font-medium text-acw-green hover:underline">{notice.data.linkLabel || 'Read more'}<Icon name="arrow-right" class="h-4 w-4" /></a>
               )}
             </li>
           ))

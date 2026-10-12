@@ -1,17 +1,8 @@
 ---
 import Icon from './Icon.astro';
-import Flag from './Flag.astro';
-import { notices } from '../data/notices.js';
+import { getNotices, formatNoticeDate, isoDay } from '../lib/notices';
 
-const recent = notices.slice(0, 3);
-
-const fmt = (iso) =>
-  new Intl.DateTimeFormat('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'America/Chicago',
-  }).format(new Date(`${iso}T12:00:00-05:00`));
+const recent = (await getNotices()).slice(0, 3);
 ---
 
 <section aria-labelledby="notices-heading" class="border-b border-acw-rule bg-white">
@@ -36,22 +27,21 @@ const fmt = (iso) =>
       {
         recent.map((notice) => (
           <li>
-              <a href={`/notices#${notice.slug}`} class="group block px-7 py-7">
+              <a href={`/notices#${notice.id}`} class="group block px-7 py-7">
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1">
-                <time datetime={notice.date} class="text-[13px] text-acw-muted">
-                  {fmt(notice.date)}
+                <time datetime={isoDay(notice.data.date)} class="text-[13px] text-acw-muted">
+                  {formatNoticeDate(notice.data.date)}
                 </time>
                 <span class="text-acw-rule">&middot;</span>
-                <span class="caps text-[11px] text-acw-green">{notice.kind}</span>
-                {notice.placeholder && <Flag kind="demo" />}
+                <span class="caps text-[11px] text-acw-green">{notice.data.kind}</span>
               </div>
 
               <h3 class="mt-2 font-heading text-[19px] font-medium text-acw-deep group-hover:underline">
-                {notice.title}
+                {notice.data.title}
               </h3>
 
               <p class="mt-2 max-w-[42rem] text-[16px] leading-relaxed text-acw-muted">
-                {notice.summary}
+                {notice.data.summary}
               </p>
             </a>
           </li>

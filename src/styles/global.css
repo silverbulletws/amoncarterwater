@@ -21,12 +21,18 @@
   --acw-muted:  #5F5E5A; /* secondary text */
   --acw-rule:   #D3D1C7; /* dividers */
 
-  /* Status states beyond `normal`. Derived, not brand — they only ever appear
-     inside StatusBar, but they live here so all colour is in one file. */
+  /* Status colours beyond green (which uses the brand tint/mid/deep above).
+     amber and blue: a dot, a pale strip background and dark text. red-ink is
+     the background of the red band. Derived, not brand — they only ever
+     appear inside StatusBar, but they live here so all colour is in one file. */
+  --acw-amber-dot:  #D98E1F;
   --acw-amber-tint: #FBF0DA;
   --acw-amber-ink:  #7A4E10;
   --acw-red-tint:   #F8E3DC;
   --acw-red-ink:    #8A2D12;
+  --acw-blue-dot:   #2F7FC1;
+  --acw-blue-tint:  #E2EEF8;
+  --acw-blue-ink:   #173F63;
 }
 
 @theme inline {
@@ -40,10 +46,14 @@
   --color-acw-muted: var(--acw-muted);
   --color-acw-rule:  var(--acw-rule);
 
+  --color-acw-amber-dot:  var(--acw-amber-dot);
   --color-acw-amber-tint: var(--acw-amber-tint);
   --color-acw-amber-ink:  var(--acw-amber-ink);
   --color-acw-red-tint:   var(--acw-red-tint);
   --color-acw-red-ink:    var(--acw-red-ink);
+  --color-acw-blue-dot:   var(--acw-blue-dot);
+  --color-acw-blue-tint:  var(--acw-blue-tint);
+  --color-acw-blue-ink:   var(--acw-blue-ink);
 
   /* Headings in Instrument Sans, body in Inter. If Instrument Sans reads too
      geometric on screen, delete it from --font-heading and the Inter fallback
